@@ -1,3 +1,18 @@
 body {
     background-color: oklch(27.4% 0.006 286.033);
 }
+
+.cardBox {
+    width: calc(40vw);
+    background-color: red;
+    display: flex;
+    flex-direction: column;
+    border-radius: 5px;
+    padding: 10px;
+}
+
+.cardBox>img {
+    border-radius: 5px 5px 0 0;
+    height: 300px;
+    object-fit: cover;
+}
