@@ -6,7 +6,7 @@ import ProjectHolder from './components/ProjectsHolder';
 function App() {
   return (
     <>
-      <Navbar />
+      {/* <Navbar /> */}
       <Name />
       <ProjectHolder />
     </>
