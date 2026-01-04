@@ -1,3 +1,8 @@
 body {
-    background-color: oklch(27.4% 0.006 286.033);
+    background-color: #1a1414;
+    color: #F7F3EE;
+}
+
+.highlight {
+    color: #E1B12C;
 }

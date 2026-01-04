@@ -26,9 +26,9 @@ export default function Name() {
     }, []);
 
     return (
-        <div className="text-white mt-[5rem] ml-[5rem] pb-8">
-            <div className="name text-9xl"></div>
-            <div className="last-name text-9xl ml-[10rem]"></div>
+        <div className="text-white md:mt-[5rem] md:ml-[5rem] mt-[2rem] ml-[2rem] pb-8">
+            <div className="name text-5xl md:text-9xl"></div>
+            <div className="last-name text-5xl md:text-9xl md:ml-[10rem] ml-[5rem]"></div>
             <div className="desc text-2xl mt-4"></div>
             <div className="bar"></div>
         </div>
