@@ -48,7 +48,7 @@ export default function ProjectHolder() {
     return (
         <div id='projects' className="w-full pb-20">
             {/* Header Section */}
-            <div className='w-[95%] max-w-7xl mx-auto mt-10 mb-12'>
+            <div className='w-[95%]  mx-auto mt-10 mb-12'>
                 <div className='bg-[#3A2622] rounded-lg p-6 shadow-xl border border-[#5a3a2a]/30'>
                     <h2 className='text-3xl md:text-5xl font-bold text-center md:text-left drop-shadow-md'>
                         Most relevant projects
@@ -57,9 +57,9 @@ export default function ProjectHolder() {
             </div>
 
             <div className="
-                grid grid-cols-1 md:grid-cols-2 
+                grid grid-cols-1 lg:grid-cols-2 
                 gap-8 md:gap-12 
-                w-[95%] max-w-7xl mx-auto 
+                w-[95%]  mx-auto 
                 place-items-start"
             >
                 {projects.map((project, idx) => (

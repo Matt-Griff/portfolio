@@ -43,7 +43,7 @@ export default function ProjectCard({ className, tools, title, description, imag
             {/* Image */}
             <div className="flex justify-center w-full mb-4 shrink-0">
                 <img
-                    className="w-full h-[200px] md:h-[283px] object-cover rounded-lg shadow-md border border-[#FFD700]/10"
+                    className="w-full h-[150px] sm:h-[200px] md:h-[283px] object-cover rounded-lg shadow-md border border-[#FFD700]/10"
                     src={image}
                     alt={title || "Project preview"}
                 />

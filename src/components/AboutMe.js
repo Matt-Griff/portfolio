@@ -2,9 +2,15 @@
 export default function AboutMe() {
     return (
         <div className="about w-full h-auto flex flex-col items-center text-white" id="about">
-            <div className='bg-auto bg-[#3A2622] w-[97%] rounded-lg mt-5 mb-10 flex items-center mx-auto'>
-                <div className='text-6xl p-6'> About Me </div>
+            {/* Header Section */}
+            <div className='w-[95%] mx-auto mt-10 mb-12'>
+                <div className='bg-[#3A2622] rounded-lg p-6 shadow-xl border border-[#5a3a2a]/30'>
+                    <h2 className='text-3xl md:text-5xl font-bold text-center md:text-left drop-shadow-md'>
+                        About Me
+                    </h2>
+                </div>
             </div>
+
             <div class="text-xl flex ml-4 gap-4 justify-center items-center flex-wrap mb-10">
 
                 <div class="flex flex-col md:w-[50%] w-full justify-center items-start gap-12">
