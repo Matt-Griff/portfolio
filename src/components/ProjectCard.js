@@ -4,8 +4,6 @@ export default function ProjectCard({ className, tools, title, description, imag
         window.open(link, '_blank');
     };
 
-
-
     return (
         <div
             className={`cardBox ${className} 
