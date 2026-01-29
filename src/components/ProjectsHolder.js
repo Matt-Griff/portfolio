@@ -71,8 +71,8 @@ export default function ProjectHolder() {
                 ))}
             </div>
             <div className="w-full flex justify-center mt-12">
-                <div className=" bg-[#3A2622] rounded-lg p-4 md:p-6 shadow-xl border border-[#5a3a2a]/30">
-                    <button onClick={handleSeeMoreClick}>See more on my GitHub</button>
+                <div onClick={handleSeeMoreClick} className="cursor-pointer bg-[#3A2622] rounded-lg p-4 md:p-6 shadow-xl border border-[#5a3a2a]/30">
+                    <div className="underline">See more on my GitHub</div>
                 </div>
             </div>
         </div>
