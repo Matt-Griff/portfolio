@@ -237,6 +237,8 @@ const fr: Dictionary = {
         title: "Me contacter",
         intro: `Vous cherchez un stagiaire pour un <span class="font-semibold text-accent">stage de fin d’études de 6 mois en systèmes embarqués</span> ? Choisissez le moyen qui vous convient.`,
         mail: "E-mail",
+        cv: "CV",
+        cvHandle: "Télécharger le PDF",
         copy: "Copier l’adresse e-mail",
         copied: "Copiée !",
     },

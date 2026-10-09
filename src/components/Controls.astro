@@ -21,13 +21,13 @@ const otherHref = Astro.props.langSwitchHref ?? switchLangPath(Astro.url.pathnam
         aria-label={t.controls.switchLang}
         title={t.controls.switchLang}
         data-lang-switch
-        class="flex h-11 items-center rounded-full border border-tint/10 bg-surface/50 px-1 text-xs font-semibold shadow-lg shadow-black/30 backdrop-blur-xl"
+        class="flex h-11 items-stretch gap-0.5 rounded-full border border-tint/10 bg-surface/50 p-1 text-xs font-semibold shadow-lg shadow-black/30 backdrop-blur-xl"
     >
         {(['en', 'fr'] as const).map((code) => (
             <span
                 class:list={[
-                    'rounded-full px-2.5 py-1.5 uppercase transition-colors',
-                    code === lang ? 'bg-tint/10 text-ink' : 'text-muted',
+                    'flex w-9 items-center justify-center rounded-full uppercase transition-colors',
+                    code === lang ? 'bg-tint/10 text-ink' : 'text-muted hover:text-ink',
                 ]}
             >
                 {code}

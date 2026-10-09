@@ -239,6 +239,8 @@ const en = {
         title: "Contact Me",
         intro: `Looking for an intern for a <span class="font-semibold text-accent">6-month end-of-studies internship in embedded systems</span>? Pick whichever way suits you best.`,
         mail: "Mail",
+        cv: "CV",
+        cvHandle: "Download PDF",
         copy: "Copy email address",
         copied: "Copied!",
     },
