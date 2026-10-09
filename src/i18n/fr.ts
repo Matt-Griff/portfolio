@@ -126,65 +126,99 @@ const fr: Dictionary = {
                     },
                 ],
                 team: "Matthieu Griffonnet & Rayan Outili",
-                captions: [],
+                captions: ["Un trajet à travers Lyon : marche, vélo entre deux stations JCDecaux, marche", "Formulaire d’itinéraire avec autocomplétion des adresses"],
             },
-            "erp-service-station": {
-                title: "ERP, station-service",
+            laserdiff: {
+                title: "Laser Diff",
                 summary:
-                    "Un ERP web pour une station-service, développé en projet universitaire avec la méthode Agile/Scrum. Il gère les opérations quotidiennes, avec des tableaux de bord dédiés aux employés et au gérant.",
-                intro: "Un ERP (progiciel de gestion intégré) pour une station-service, réalisé en projet universitaire avec des méthodes agiles : de l’analyse des besoins à la conception, en passant par la planification des sprints et le développement.",
+                    "Un jeu d’échecs laser Khet en ligne, construit en microservices Node.js : en local, contre une IA (minimax) ou en ligne en 1v1, avec classement Elo, ligues, amis, duels et chat en temps réel.",
+                intro: "Laser Diff est une version web de Khet, le jeu d’échecs laser où des pièces à miroirs font rebondir des lasers sur le plateau, réalisée en équipe de 3 pour le projet PS8 à Polytech Nice Sophia.",
                 sections: [
                     {
-                        heading: "Démarche agile",
-                        text: "Nous avons transformé les besoins en user stories, organisées en product backlogs et en sprints, et attribué les rôles Scrum comme Scrum Master et Product Owner.",
-                    },
-                    {
-                        heading: "Fonctionnalités",
+                        heading: "Modes de jeu",
                         bullets: [
-                            "Mettre en marche et arrêter les pompes",
-                            "Demander des réapprovisionnements (carburant et produits)",
-                            "Délivrer des cartes de fidélité et de crédit",
-                            "Gérer les achats et les encaissements",
-                            "Consulter et mettre à jour les stocks de produits",
-                            "Être alerté en cas d’incident",
-                            "Recevoir les directives de la direction régionale",
-                            "Organiser des services entre particuliers",
+                            "1v1 en local sur le même écran",
+                            "Joueur contre IA, avec un algorithme minimax limité à 250 ms par coup",
+                            "1v1 en ligne, avec des salons de duel privés entre amis",
+                            "Un chronomètre de 10 minutes par joueur, et 30 secondes pour se reconnecter après une déconnexion",
                         ],
                     },
                     {
-                        heading: "Interface",
-                        text: "Deux tableaux de bord, l’un pour l’employé, l’autre pour le gérant. Contrainte de conception majeure : garder la caisse toujours à gauche de l’écran et tous les autres composants à droite. Chaque composant peut s’étendre sur toute la partie droite, pour un accès en un clic à ses fonctionnalités.",
+                        heading: "Joueurs et communauté",
+                        bullets: [
+                            "Inscription et connexion avec des jetons JWT (accès et rafraîchissement)",
+                            "Classement Elo et ligues, jusqu’à Challenger à 2400",
+                            "Profil avec historique des parties et évolution de l’Elo, plus un classement général",
+                            "Demandes d’ami, duels et chat privé entre amis",
+                            "Chat global en temps réel avec filtre de mots, et chat en partie avec emotes et messages prédéfinis",
+                        ],
+                    },
+                    {
+                        heading: "Architecture",
+                        text: "Huit services Node.js (auth, game, chat, files, friends, ranking, user et une gateway) plus MongoDB, lancés avec Docker Compose. La gateway est le point d’entrée unique : elle relaie les requêtes HTTP et garde les connexions WebSocket vers les services de jeu et de chat, si bien que la vérification des JWT se fait à un seul endroit et que les services internes ne sont jamais exposés.",
                     },
                 ],
-                team: "Tom Da Costa, Sabra Essalah, Matthieu Griffonnet, Rayan Outili, Thomas Portelette, Clara Torri, Lucas Wallner",
-                captions: ["Écran de connexion", "Tableau de bord", "État des cuves"],
+                team: "Louis Duban, Matthieu Griffonnet, Thomas Portelette",
+                captions: ["Une partie en 1v1 local : plateau, chronomètres, historique des coups et chat en partie", "Page d’accueil avec les trois modes de jeu"],
             },
-            portfolio: {
-                title: "Portfolio personnel",
+            dam: {
+                title: "DAM sur blockchain",
                 summary:
-                    "Ce site, qui présente mes compétences, mes projets et mon parcours. Réalisé avec Astro et stylé avec TailwindCSS, il est responsive et animé avec GSAP.",
-                intro: "Le site sur lequel vous êtes. D’abord réalisé avec Create React App, il a été refait avec Astro : les pages sont du HTML statique et embarquent très peu de JavaScript.",
+                    "Un système de gestion d’actifs numériques (DAM) qui prouve la propriété des images et détecte les copies non autorisées, en combinant hachage perceptuel, signatures cryptographiques et NFT sur Polygon. Réalisé pendant mon stage au DNIIT.",
+                intro: "Un système de gestion d’actifs numériques (DAM) réalisé pendant mon stage au DNIIT, à Da Nang (Vietnam). Chaque image importée reçoit une empreinte par hachage perceptuel, est signée par son créateur et enregistrée comme NFT sur Polygon : on peut ainsi prouver sa propriété et détecter les copies quasi identiques.",
                 sections: [
                     {
-                        heading: "Fonctionnalités",
+                        heading: "Fonctionnement",
                         bullets: [
-                            "Thèmes clair et sombre qui suivent le réglage de votre système, avec un bouton pour changer",
-                            "Versions française et anglaise",
-                            "Animations au défilement avec GSAP, dont une fusée qui traverse la frise de formation",
-                            "Une page par projet, comme celle-ci",
-                            "Site statique prévu pour Cloudflare Pages",
+                            "Import : l’image est hachée avec six algorithmes perceptuels (aHash, dHash, pHash, hachage couleur, CHash et RHash)",
+                            "Vérification : les empreintes sont comparées à l’index pour repérer doublons et copies avant l’enregistrement",
+                            "Blockchain : le créateur signe l’empreinte, et l’actif est créé comme NFT sur le réseau de test Polygon Amoy",
+                        ],
+                    },
+                    {
+                        heading: "Détection de copies d’images",
+                        text: "J’ai conçu deux algorithmes de hachage perceptuel inédits, CHash et RHash, et un modèle de fusion multi-critères. Un pipeline de recherche en deux étapes (embeddings DINOv2 et recherche approximative FAISS/HNSW, suivis d’un scoring algorithmique) atteint 85,6 % de précision de récupération et un F1 = 0,936 sur un benchmark de 2 112 requêtes. Ce travail a donné lieu à un article accepté à IEEE-Blockchain 2026.",
+                    },
+                    {
+                        heading: "Architecture",
+                        bullets: [
+                            "Service de hachage : Python et FastAPI, pour le hachage, la signature et la comparaison d’images",
+                            "Smart contracts : Solidity et Hardhat. DAMAsset (ERC-721), DAMSignature (empreinte et signature ECDSA) et DAMVerifier (vérification de la signature on-chain), vérifiés sur Polygonscan",
+                            "Back-end : API NestJS avec PostgreSQL, qui relie le front-end, le service de hachage et la blockchain",
+                            "Front-end : Next.js avec connexion au portefeuille MetaMask, pour importer, créer et vérifier les actifs",
                         ],
                     },
                 ],
                 team: "",
-                captions: [],
+                captions: ["Enregistrer un nouvel actif : import, hachage, blockchain", "Les trois smart contracts et leurs liens"],
             },
             noesis: {
                 title: "Noésis",
                 summary:
-                    "Un site de quiz qui s’adapte aux capacités cognitives de ses utilisateurs, par exemple des personnes atteintes d’Alzheimer, pour maintenir leur engagement et leur santé cérébrale. Réalisé par une équipe de 4 étudiants en méthode agile.",
-                intro: "Un site de quiz pensé pour des personnes ayant des troubles cognitifs comme la maladie d’Alzheimer. Les quiz s’adaptent aux capacités de chacun pour maintenir l’engagement et la santé cérébrale.",
+                    "Une application web de quiz adaptatifs pour les personnes atteintes de la maladie d’Alzheimer : les quiz s’adaptent au profil de chaque accueilli, et les accompagnants suivent leur évolution grâce aux statistiques. Réalisée par une équipe de 4 en méthode agile.",
+                intro: "Noésis est une application de quiz adaptatifs pour les personnes atteintes de la maladie d’Alzheimer en accueil de jour. Chaque accueilli a un profil dont les réglages modifient l’affichage et le déroulement des quiz, et les accompagnants peuvent suivre ses résultats dans le temps.",
                 sections: [
+                    {
+                        heading: "Adapté à chaque accueilli",
+                        bullets: [
+                            "Taille des textes et des images",
+                            "Délai avant l’apparition d’un indice et avant un message d’encouragement",
+                            "Confirmation facultative avant de valider une réponse",
+                            "Nombre de réponses par question, avec suppression des mauvaises réponses ou passage à la question suivante après plusieurs erreurs",
+                        ],
+                    },
+                    {
+                        heading: "Suivi pour les accompagnants",
+                        text: "Chaque accueilli a une page de statistiques : score, temps moyen par question, nombre d’essais, utilisation des indices et questions passées, sous forme de graphique dans le temps et d’historique des parties. Les psychologues et le personnel de l’accueil de jour peuvent ainsi suivre l’évolution des capacités de chacun.",
+                    },
+                    {
+                        heading: "Gestion du contenu",
+                        text: "Les accompagnants créent et modifient les profils des accueillis et les quiz, avec questions, indices et niveaux de difficulté, et une validation des formulaires.",
+                    },
+                    {
+                        heading: "Tests et déploiement",
+                        text: "Tests de bout en bout avec Playwright, priorisés selon trois critères : le bien-être de l’accueilli, l’adaptation à la maladie et le suivi de la maladie. Le front-end et le back-end tournent avec Docker Compose, avec une configuration dédiée aux tests.",
+                    },
                     {
                         heading: "Ma contribution",
                         bullets: [
@@ -193,13 +227,9 @@ const fr: Dictionary = {
                             "Back-end en Node.js, conteneurisé avec Docker",
                         ],
                     },
-                    {
-                        heading: "Équipe",
-                        text: "Réalisé par une équipe de 4 étudiants en méthode agile.",
-                    },
                 ],
-                team: "",
-                captions: [],
+                team: "4 étudiants, méthode agile",
+                captions: ["Un quiz en cours, avec de grandes réponses illustrées", "Les quiz regroupés par thème", "Les profils des accueillis, gérés par les accompagnants"],
             },
         },
     },

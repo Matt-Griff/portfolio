@@ -128,65 +128,99 @@ const en = {
                     },
                 ] as DetailSection[],
                 team: "Matthieu Griffonnet & Rayan Outili",
-                captions: [] as string[],
+                captions: ["A route across Lyon: walk, bike between two JCDecaux stations, walk", "Route form with address autocompletion"],
             },
-            "erp-service-station": {
-                title: "ERP, Service Station",
+            laserdiff: {
+                title: "Laser Diff",
                 summary:
-                    "A web-based ERP for a gas station, developed as a university project using Agile/Scrum. It manages daily operations, with dedicated dashboards for employees and managers.",
-                intro: "An ERP (Enterprise Resource Planning) system for a service station, built as a university project with Agile methods, from requirements analysis to design, sprint planning and development.",
+                    "An online Khet laser chess game built with Node.js microservices: play locally, against an AI (minimax) or online 1v1, with Elo ranking, leagues, friends, duels and real-time chat.",
+                intro: "Laser Diff is a web version of Khet, the laser chess game where mirrored pieces bounce lasers across the board, built by a team of 3 for the PS8 project at Polytech Nice Sophia.",
                 sections: [
                     {
-                        heading: "Agile process",
-                        text: "We turned the requirements into user stories, organised them into product backlogs and sprints, and assigned Scrum roles such as Scrum Master and Product Owner.",
-                    },
-                    {
-                        heading: "Features",
+                        heading: "Game modes",
                         bullets: [
-                            "Switch fuel pumps on and off",
-                            "Request fuel and product restocking",
-                            "Issue loyalty and credit cards",
-                            "Manage purchases and payments",
-                            "View and update product stock",
-                            "Get alerts when incidents happen",
-                            "Receive instructions from regional management",
-                            "Organise services between customers",
+                            "Local 1v1 on the same screen",
+                            "Player vs AI, using a minimax algorithm limited to 250 ms per move",
+                            "Online 1v1, including private duel rooms between friends",
+                            "A 10-minute timer per player, and 30 seconds to reconnect after a disconnection",
                         ],
                     },
                     {
-                        heading: "Interface",
-                        text: "Two dashboards, one for employees and one for the manager. A key design constraint was to keep the cash register on the left of the screen at all times, with every other component on the right. Each component can expand to fill the right side, giving one-click access to its features.",
+                        heading: "Players and community",
+                        bullets: [
+                            "Sign-up and login with JWT access and refresh tokens",
+                            "Elo rating and leagues, up to Challenger at 2400",
+                            "Profile with game history and Elo changes, plus a leaderboard",
+                            "Friend requests, duels and a private friend chat",
+                            "Real-time global chat with a word filter, and in-game chat with emotes and preset messages",
+                        ],
+                    },
+                    {
+                        heading: "Architecture",
+                        text: "Eight Node.js services (auth, game, chat, files, friends, ranking, user and a gateway) plus MongoDB, run with Docker Compose. The gateway is the single entry point: it forwards HTTP requests and keeps WebSocket connections to the game and chat services, so JWT checks happen in one place and internal services are never exposed.",
                     },
                 ] as DetailSection[],
-                team: "Tom Da Costa, Sabra Essalah, Matthieu Griffonnet, Rayan Outili, Thomas Portelette, Clara Torri, Lucas Wallner",
-                captions: ["Login screen", "Dashboard", "Fuel tank levels"],
+                team: "Louis Duban, Matthieu Griffonnet, Thomas Portelette",
+                captions: ["A local 1v1 game: board, timers, move history and in-game chat", "Home page with the three game modes"],
             },
-            portfolio: {
-                title: "Personal Portfolio",
+            dam: {
+                title: "Blockchain-backed DAM",
                 summary:
-                    "This website, showcasing my skills, projects and experience. Built with Astro and styled with TailwindCSS, it features a responsive design and smooth GSAP animations.",
-                intro: "The site you are on. It started as a Create React App project and was rebuilt with Astro, so the pages are static HTML and ship very little JavaScript.",
+                    "A Digital Asset Management system that proves image ownership and detects unauthorised copies, combining perceptual hashing, cryptographic signatures and NFTs on Polygon. Built during my internship at DNIIT.",
+                intro: "A Digital Asset Management system built during my internship at DNIIT in Da Nang, Vietnam. Each uploaded image is fingerprinted with perceptual hashes, signed by its creator and registered as an NFT on Polygon, so ownership can be proven and near-duplicate copies detected.",
                 sections: [
                     {
-                        heading: "Features",
+                        heading: "How it works",
                         bullets: [
-                            "Light and dark themes that follow your system setting, with a manual toggle",
-                            "English and French versions",
-                            "GSAP scroll animations, including a rocket that flies through the Education timeline",
-                            "A page for each project, like this one",
-                            "Built as a static site for Cloudflare Pages",
+                            "Upload: the image is hashed with six perceptual algorithms (aHash, dHash, pHash, colour hash, CHash and RHash)",
+                            "Check: the hashes are compared against the index to catch duplicates and copies before registration",
+                            "Blockchain: the creator signs the hash, and the asset is minted as an NFT on the Polygon Amoy testnet",
+                        ],
+                    },
+                    {
+                        heading: "Image copy detection",
+                        text: "I designed two novel perceptual hashing algorithms, CHash and RHash, and a multi-criteria fusion model. A two-stage retrieval pipeline (DINOv2 embeddings and FAISS/HNSW approximate search, followed by algorithmic scoring) reaches 85.6% retrieval precision and F1 = 0.936 on a 2,112-query benchmark. The work led to a paper accepted at IEEE-Blockchain 2026.",
+                    },
+                    {
+                        heading: "Architecture",
+                        bullets: [
+                            "Hashing service: Python and FastAPI, for hashing, signing and similarity checks",
+                            "Smart contracts: Solidity and Hardhat. DAMAsset (ERC-721), DAMSignature (hash and ECDSA signature) and DAMVerifier (on-chain signature recovery), verified on Polygonscan",
+                            "Back end: NestJS API with PostgreSQL, linking the front end, the hashing service and the blockchain",
+                            "Front end: Next.js with MetaMask wallet connection, for uploading, minting and verifying assets",
                         ],
                     },
                 ] as DetailSection[],
                 team: "",
-                captions: [] as string[],
+                captions: ["Registering a new asset: upload, hashing, blockchain", "The three smart contracts and how they connect"],
             },
             noesis: {
                 title: "Noésis",
                 summary:
-                    "A quiz website that adapts to users' cognitive abilities, such as people with Alzheimer's, to keep them engaged and support brain health. Built by a team of 4 students using Agile methods.",
-                intro: "A quiz website designed for people with cognitive impairments such as Alzheimer's disease. The quizzes adapt to each person's abilities to keep them engaged and support their brain health.",
+                    "An adaptive quiz web app for people with Alzheimer's disease: quizzes adjust to each resident's profile, and caregivers follow their progress through statistics. Built by a team of 4 using Agile methods.",
+                intro: "Noésis is an adaptive quiz application for people with Alzheimer's disease in day-care centres. Each resident has a profile whose settings change how quizzes look and behave, and caregivers can follow their results over time.",
                 sections: [
+                    {
+                        heading: "Adapted to each resident",
+                        bullets: [
+                            "Text and image sizes",
+                            "Delay before a hint appears, and before an encouragement reminder",
+                            "Optional confirmation before validating an answer",
+                            "Number of answers per question, with wrong answers removed or the question skipped after repeated mistakes",
+                        ],
+                    },
+                    {
+                        heading: "Follow-up for caregivers",
+                        text: "Each resident has a statistics page: score, average time per question, attempts per question, hint use and skipped questions, shown as a chart over time and a game history. It helps psychologists and day-care staff see how each person's abilities evolve.",
+                    },
+                    {
+                        heading: "Managing content",
+                        text: "Caregivers create and edit resident profiles and quizzes, with questions, hints and difficulty levels, and form validation throughout.",
+                    },
+                    {
+                        heading: "Testing and deployment",
+                        text: "End-to-end tests with Playwright, prioritised by three criteria: the resident's well-being, adaptation to the disease, and follow-up of the disease. The front end and back end run with Docker Compose, with a separate setup for the tests.",
+                    },
                     {
                         heading: "What I worked on",
                         bullets: [
@@ -195,13 +229,9 @@ const en = {
                             "Back end with Node.js, containerised with Docker",
                         ],
                     },
-                    {
-                        heading: "Team",
-                        text: "Built by a team of 4 students using Agile methods.",
-                    },
                 ] as DetailSection[],
-                team: "",
-                captions: [] as string[],
+                team: "4 students, Agile methods",
+                captions: ["A quiz in progress, with large picture answers", "Quizzes grouped by theme", "Resident profiles, managed by caregivers"],
             },
         },
     },

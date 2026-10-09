@@ -13,35 +13,44 @@ export const experiences = [
 export const projects = [
     {
         slug: "letsgobiking",
-        image: "/images/letsGo.png",
+        image: "/images/projects/letsgobiking-route.webp",
         link: "https://github.com/Matt-Griff/LetsGoBiking",
         tools: ["C#", ".NET (WCF)", "REST/SOAP", "Proxy / Cache", "ActiveMQ", "Leaflet", "Vanilla HTML"],
-        gallery: [] as string[],
-    },
-    {
-        slug: "erp-service-station",
-        image: "/images/projects/erp-dashboard.webp",
-        link: "https://github.com/Matt-Griff/ERP_station_service",
-        tools: ["React", "Express", "PostgreSQL", "Heroku", "Agile/Scrum", "Sprint Planning"],
         gallery: [
-            "/images/projects/erp-login.webp",
-            "/images/projects/erp-dashboard.webp",
-            "/images/projects/erp-tanks.webp",
+            "/images/projects/letsgobiking-route.webp",
+            "/images/projects/letsgobiking-form.webp",
         ],
     },
     {
-        slug: "portfolio",
-        image: "/images/port.png",
-        link: "https://github.com/Matt-Griff/portfolio",
-        tools: ["Astro", "TailwindCSS", "GSAP", "Cloudflare Pages"],
-        gallery: [] as string[],
+        slug: "laserdiff",
+        image: "/images/projects/laserdiff-game.webp",
+        link: "https://github.com/Matt-Griff/ps8-Laserdiff",
+        tools: ["Node.js", "JavaScript", "Microservices", "Socket.IO", "MongoDB", "JWT", "Docker"],
+        gallery: [
+            "/images/projects/laserdiff-game.webp",
+            "/images/projects/laserdiff-home.webp",
+        ],
+    },
+    {
+        slug: "dam",
+        image: "/images/projects/dam-upload.webp",
+        link: "https://github.com/HammoudYounes/dam-blockchain",
+        tools: ["Python", "FastAPI", "PyTorch", "FAISS", "Solidity", "Polygon", "NestJS", "Next.js", "Docker"],
+        gallery: [
+            "/images/projects/dam-upload.webp",
+            "/images/projects/dam-contracts.webp",
+        ],
     },
     {
         slug: "noesis",
-        image: "/images/noesis.png",
+        image: "/images/projects/noesis-quizlist.webp",
         link: "https://github.com/Matt-Griff/si3-ps6-noesis",
-        tools: ["Node.js", "Docker", "Angular", "TypeScript", "Wireframing"],
-        gallery: [] as string[],
+        tools: ["Angular", "TypeScript", "Node.js", "Express", "Chart.js", "Playwright", "Docker"],
+        gallery: [
+            "/images/projects/noesis-quiz.webp",
+            "/images/projects/noesis-quizlist.webp",
+            "/images/projects/noesis-profiles.webp",
+        ],
     },
 ] as const;
 
@@ -52,5 +61,5 @@ export const education = [
     { id: "military", logo: "/images/marine.png", years: "2021 - 2022" },
     { id: "iut", logo: "/images/iut.png", years: "2022 - 2024" },
     { id: "polytech", logo: "/images/polytech.png", years: "2024 - 2027" },
-    { id: "next", logo: "/images/polytech.png", years: "2027 - ..." },
+    { id: "next", logo: "/images/next.png", years: "2027 - ..." },
 ] as const;
