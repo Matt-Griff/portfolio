@@ -1,0 +1,53 @@
+.marquee {
+    display: flex;
+    overflow: hidden;
+    /* Fade the icons out at both edges. */
+    mask-image: linear-gradient(to right, transparent, black 12%, black 88%, transparent);
+}
+
+.marquee-track {
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    gap: 3rem;
+    padding-right: 3rem;
+    animation: spin 40s infinite linear;
+}
+
+.marquee:hover .marquee-track {
+    animation-play-state: paused;
+}
+
+.marquee-item img {
+    width: 56px;
+    height: 56px;
+    object-fit: contain;
+    filter: grayscale(1) brightness(1.4);
+    opacity: 0.6;
+    transition: filter 0.3s, opacity 0.3s;
+}
+
+[data-theme="light"] .marquee-item img {
+    filter: grayscale(1);
+}
+
+.marquee-item img:hover {
+    filter: none;
+    opacity: 1;
+}
+
+@keyframes spin {
+    from {
+        translate: 0%;
+    }
+
+    to {
+        translate: -100%;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .marquee-track {
+        animation: none;
+    }
+}

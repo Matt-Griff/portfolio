@@ -1,0 +1,47 @@
+---
+const links = [
+    { href: '#about', label: 'About' },
+    { href: '#experience', label: 'Experience' },
+    { href: '#skills', label: 'Skills' },
+    { href: '#projects', label: 'Projects' },
+    { href: '#education', label: 'Education' },
+];
+---
+
+<nav class="fixed inset-x-0 bottom-4 z-50 flex justify-center px-4 sm:top-4 sm:bottom-auto">
+    <ul class="flex items-center gap-1 rounded-full border border-tint/10 bg-surface/50 p-1.5 shadow-lg shadow-black/30 backdrop-blur-xl">
+        {links.map((link) => (
+            <li>
+                <a
+                    href={link.href}
+                    data-nav-link
+                    class="block rounded-full px-2 py-1.5 text-xs sm:px-5 sm:text-sm font-medium text-muted transition-colors hover:bg-tint/10 hover:text-ink"
+                >
+                    {link.label}
+                </a>
+            </li>
+        ))}
+    </ul>
+</nav>
+
+<script>
+    // Highlight the link of the section currently in view.
+    const links = document.querySelectorAll<HTMLAnchorElement>('[data-nav-link]');
+    const observer = new IntersectionObserver(
+        (entries) => {
+            entries.forEach((entry) => {
+                if (!entry.isIntersecting) return;
+                links.forEach((link) => {
+                    const active = link.getAttribute('href') === `#${entry.target.id}`;
+                    link.classList.toggle('bg-tint/10', active);
+                    link.classList.toggle('text-ink', active);
+                });
+            });
+        },
+        { rootMargin: '-45% 0px -50% 0px' }
+    );
+    links.forEach((link) => {
+        const section = document.querySelector(link.getAttribute('href')!);
+        if (section) observer.observe(section);
+    });
+</script>

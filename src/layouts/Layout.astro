@@ -1,0 +1,57 @@
+---
+import '../styles/global.css';
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#09090b" />
+    <meta name="description" content="Portfolio of Matthieu Griffonnet, software engineering student at Polytech Nice Sophia." />
+    <link rel="icon" href="/favicon.ico" />
+    <link rel="manifest" href="/manifest.json" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <title>Matthieu Griffonnet's PortFolio</title>
+    {/* Runs before first paint so the page never flashes the wrong theme. */}
+    <script is:inline>
+      (function () {
+        var stored = null;
+        try { stored = localStorage.getItem('theme'); } catch (e) {}
+        var media = window.matchMedia('(prefers-color-scheme: dark)');
+        function apply(theme) {
+          document.documentElement.dataset.theme = theme;
+          var meta = document.querySelector('meta[name="theme-color"]');
+          if (meta) meta.setAttribute('content', theme === 'dark' ? '#09090b' : '#fafafa');
+        }
+        apply(stored === 'light' || stored === 'dark' ? stored : (media.matches ? 'dark' : 'light'));
+        // Follow the OS setting live until the visitor picks a theme manually.
+        media.addEventListener('change', function (e) {
+          var manual = null;
+          try { manual = localStorage.getItem('theme'); } catch (err) {}
+          if (!manual) apply(e.matches ? 'dark' : 'light');
+        });
+        window.__applyTheme = apply;
+      })();
+    </script>
+  </head>
+  <body class="relative min-h-screen overflow-x-hidden">
+    {/* Soft background glows: they give the navbar's blur something to show. */}
+    <div aria-hidden="true" class="pointer-events-none fixed inset-0 -z-10">
+      <div class="absolute -top-40 left-1/2 h-[36rem] w-[36rem] -translate-x-1/2 rounded-full bg-accent/15 blur-3xl"></div>
+      <div class="absolute top-[60%] -right-40 h-[28rem] w-[28rem] rounded-full bg-accent-2/10 blur-3xl"></div>
+      <div class="absolute top-[30%] -left-40 h-[24rem] w-[24rem] rounded-full bg-accent/10 blur-3xl"></div>
+    </div>
+
+    <slot />
+
+    <script>
+      import '../scripts/reveal';
+    </script>
+  </body>
+</html>

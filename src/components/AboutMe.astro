@@ -1,0 +1,30 @@
+---
+import SectionHeader from './SectionHeader.astro';
+---
+
+<section id="about" class="mx-auto max-w-6xl px-6 py-24">
+    <SectionHeader index="01" title="About Me" />
+
+    <div class="grid items-center gap-12 md:grid-cols-[3fr_2fr]">
+        <div class="space-y-6 text-lg leading-relaxed text-muted">
+            <p data-reveal>
+                Hello! My name is <span class="font-semibold text-ink">Matthieu Griffonnet</span>, and I am a final-year (5th year)
+                computer science engineering student at <span class="font-semibold text-ink">Polytech Nice Sophia</span> (Université
+                Côte d’Azur), specialising in <span class="font-semibold text-ink">Internet of Things &amp; Cyber-Physical Systems</span>.
+            </p>
+            <p data-reveal>
+                I enjoy building reliable, efficient, and well-structured software, from low-level code in C and C++ to backend
+                services and computer vision pipelines. At DNIIT in Da Nang, Vietnam, I designed perceptual hashing algorithms
+                for real-time image copy detection and co-authored a paper accepted at IEEE-Blockchain 2026.
+            </p>
+            <p data-reveal>
+                I am currently looking for a <span class="font-semibold text-accent">6-month end-of-studies internship in embedded systems</span>,
+                where I can put my IoT/CPS background to work, keep learning, and contribute to meaningful projects as part of a team.
+            </p>
+        </div>
+
+        <div class="hidden rounded-3xl border border-tint/10 bg-surface/60 p-8 md:block" data-reveal>
+            <img class="w-full" alt="About Me" src="/images/solving-amico.svg" />
+        </div>
+    </div>
+</section>

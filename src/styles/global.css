@@ -1,0 +1,90 @@
+@import "tailwindcss";
+
+@theme {
+    --color-canvas: #09090b;
+    --color-surface: #131316;
+    --color-ink: #f4f4f5;
+    --color-muted: #a1a1aa;
+    --color-accent: #a78bfa;
+    --color-accent-2: #22d3ee;
+    /* Overlay colour for borders and subtle fills: white on dark, black on light. */
+    --color-tint: #ffffff;
+
+    --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+    --font-display: "Space Grotesk", "Inter", ui-sans-serif, system-ui, sans-serif;
+}
+
+/* Theme is set on <html data-theme> by the inline script in Layout.astro. */
+@custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));
+
+:root[data-theme="light"] {
+    --color-canvas: #fafafa;
+    --color-surface: #ffffff;
+    --color-ink: #18181b;
+    --color-muted: #52525b;
+    --color-accent: #7c3aed;
+    --color-accent-2: #0891b2;
+    --color-tint: #000000;
+    color-scheme: light;
+}
+
+:root[data-theme="dark"] {
+    color-scheme: dark;
+}
+
+@font-face {
+    font-family: 'MOELA';
+    src: url('/fonts/MOELA-Light.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+html {
+    scroll-behavior: smooth;
+    /* Thin, minimal scrollbar (Firefox; Chrome 121+ also reads these). */
+    scrollbar-width: thin;
+    scrollbar-color: color-mix(in oklab, var(--color-tint) 25%, transparent) transparent;
+}
+
+/* Older WebKit/Blink fallback. */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background: color-mix(in oklab, var(--color-tint) 25%, transparent);
+    border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: color-mix(in oklab, var(--color-tint) 40%, transparent);
+}
+
+body {
+    @apply bg-canvas text-ink font-sans antialiased;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+/* Anchored sections land below the fixed navbar. */
+section[id] {
+    scroll-margin-top: 6rem;
+}
+
+.text-gradient {
+    @apply bg-gradient-to-r from-accent to-accent-2 bg-clip-text text-transparent;
+}
+
+.highlight {
+    @apply text-accent;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    html {
+        scroll-behavior: auto;
+    }
+}

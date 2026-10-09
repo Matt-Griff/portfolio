@@ -1,0 +1,31 @@
+<button
+    type="button"
+    id="theme-toggle"
+    aria-label="Toggle light and dark mode"
+    class="fixed top-4 right-4 z-50 flex h-11 w-11 items-center justify-center rounded-full border border-tint/10 bg-surface/50 text-muted shadow-lg shadow-black/30 backdrop-blur-xl transition-colors hover:text-ink"
+>
+    {/* Sun: shown in dark mode, switches to light. */}
+    <svg class="hidden h-5 w-5 dark:block" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <circle cx="12" cy="12" r="4" />
+        <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41" />
+    </svg>
+    {/* Moon: shown in light mode, switches to dark. */}
+    <svg class="h-5 w-5 dark:hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+    </svg>
+</button>
+
+<script>
+    // Defined by the inline theme script in Layout.astro.
+    const applyTheme = (window as unknown as { __applyTheme: (theme: string) => void }).__applyTheme;
+
+    document.getElementById('theme-toggle')?.addEventListener('click', () => {
+        const next = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
+        applyTheme(next);
+        try {
+            localStorage.setItem('theme', next);
+        } catch {
+            // Storage blocked: the choice still applies for this visit.
+        }
+    });
+</script>
