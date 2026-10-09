@@ -1,36 +1,14 @@
 ---
 import SectionHeader from './SectionHeader.astro';
+import { experiences as experienceData } from '../data/site';
+import { useTranslations } from '../i18n';
 
-const experiences = [
-    {
-        title: "Asset Management System with Image Signature Verification",
-        company: "DNIIT (Da Nang International Institute of Technology)",
-        location: "Da Nang, Vietnam",
-        dates: "May – Aug 2026",
-        highlight: "Paper accepted at IEEE-Blockchain 2026",
-        bullets: [
-            "Designed two novel perceptual hashing algorithms (CHash, RHash) and a multi-criteria fusion model for real-time duplicate and copy detection of images, reaching 85.6% retrieval precision and F1 = 0.936 on a 2,112-query benchmark.",
-            "Built a two-stage retrieval pipeline (DINOv2 embeddings + FAISS/HNSW approximate search) followed by algorithmic scoring, exposed through a FastAPI microservice containerised with Docker.",
-            "Co-authored a scientific paper on this detection pipeline, accepted at IEEE-Blockchain 2026.",
-        ],
-        stack: ["Python", "PyTorch", "FAISS", "OpenCV", "FastAPI", "Docker", "Git", "Linux"],
-    },
-    {
-        title: "Web Developer Intern",
-        company: "Auguste.io",
-        location: "Grenoble, France",
-        dates: "May – Jun 2024",
-        bullets: [
-            "Designed and implemented an AI-based feature for the Auguste.io platform.",
-            "Developed a video integration system that cut processing time by 40%, automating the compilation of short videos through transcript analysis.",
-        ],
-        stack: [],
-    },
-];
+const t = useTranslations(Astro.currentLocale);
+const experiences = experienceData.map(({ id, stack }) => ({ ...t.experience.items[id], stack }));
 ---
 
 <section id="experience" class="mx-auto max-w-6xl px-6 py-24">
-    <SectionHeader index="02" title="Experience" />
+    <SectionHeader index="02" title={t.experience.title} />
 
     <ol class="space-y-6">
         {experiences.map((exp) => (

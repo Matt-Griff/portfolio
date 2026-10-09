@@ -75,6 +75,14 @@ section[id] {
     scroll-margin-top: 6rem;
 }
 
+.no-scrollbar {
+    scrollbar-width: none;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+    display: none;
+}
+
 .text-gradient {
     @apply bg-gradient-to-r from-accent to-accent-2 bg-clip-text text-transparent;
 }

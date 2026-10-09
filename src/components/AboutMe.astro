@@ -1,26 +1,14 @@
 ---
 import SectionHeader from './SectionHeader.astro';
+import { useTranslations } from '../i18n';
+
+const t = useTranslations(Astro.currentLocale);
 ---
 
 <section id="about" class="mx-auto max-w-6xl px-6 py-24">
-    <SectionHeader index="01" title="About Me" />
+    <SectionHeader index="01" title={t.about.title} />
 
-    <div>
-        <div class="max-w-3xl space-y-6 text-lg leading-relaxed text-muted">
-            <p data-reveal>
-                Hello! My name is <span class="font-semibold text-ink">Matthieu Griffonnet</span>, and I am a final-year (5th year)
-                computer science engineering student at <span class="font-semibold text-ink">Polytech Nice Sophia</span> (Université
-                Côte d’Azur), specialising in <span class="font-semibold text-ink">Internet of Things &amp; Cyber-Physical Systems</span>.
-            </p>
-            <p data-reveal>
-                I enjoy building reliable, efficient, and well-structured software, from low-level code in C to backend
-                services in Java and Python, and computer vision pipelines. At DNIIT in Da Nang, Vietnam, I designed perceptual hashing algorithms
-                for real-time image copy detection and co-authored a paper accepted at IEEE-Blockchain 2026.
-            </p>
-            <p data-reveal>
-                I am currently looking for a <span class="font-semibold text-accent">6-month end-of-studies internship in embedded systems</span>,
-                where I can put my IoT/CPS background to work, keep learning, and contribute to meaningful projects as part of a team.
-            </p>
-        </div>
+    <div class="max-w-3xl space-y-6 text-lg leading-relaxed text-muted">
+        {t.about.paragraphs.map((paragraph) => <p data-reveal set:html={paragraph} />)}
     </div>
 </section>

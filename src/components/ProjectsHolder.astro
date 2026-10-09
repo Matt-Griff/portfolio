@@ -1,63 +1,42 @@
 ---
 import SectionHeader from './SectionHeader.astro';
 import ProjectCard from './ProjectCard.astro';
+import { github, projects } from '../data/site';
+import { getLang, localizePath, useTranslations } from '../i18n';
 
-const projects = [
-    {
-        title: "LetsGoBiking",
-        tools: ['C#', '.NET (WCF)', 'REST/SOAP', 'Proxy / Cache', 'ActiveMQ', 'Leaflet', 'Vanilla HTML'],
-        description: `Let’s Go Biking is an application that computes the most efficient route between
-    two locations by combining walking and JCDecaux bike sharing. A self-hosted C# routing server exposes both REST 
-    and SOAP APIs, retrieves bike station data, and decides dynamically the best path`,
-        image: "/images/letsGo.png",
-        link: "https://github.com/Matt-Griff/LetsGoBiking"
-    },
-    {
-        title: "ERP, Service Station",
-        tools: ['React', 'Express', 'PostgreSQL', 'Heroku', "Agile/Scrum", "Sprint Planning"],
-        description: `ERP of a Service Station is a web-based application developed as part of a university project using 
-        Agile/Scrum methodologies. The system manages daily operations of a gas station, with dedicated dashboards for
-         employees and managers.`,
-        image: "/images/erp.png",
-        link: "https://github.com/Matt-Griff/ERP_station_service"
-    },
-    {
-        title: "Personal Portfolio",
-        tools: ['Astro', 'TailwindCSS', 'GSAP', 'Cloudflare Pages'],
-        description: `This personal portfolio website showcases my skills, projects, and experiences as a software developer.
-        Built with Astro and styled using TailwindCSS, it features a responsive design and smooth GSAP animations to enhance user experience.`,
-        image: "/images/port.png",
-        link: "https://github.com/Matt-Griff/portfolio"
-    },
-    {
-        title: "Noésis",
-        tools: ['Node.js', 'Docker', 'Angular', 'TypeScript', 'Wireframing'],
-        description: `Developed a quiz website that adapts to users' cognitive abilities, such as people with Alzheimer's, to maintain their engagement and brain health. 
-        Built with a team of 4 students using Agile methods.
-        Implemented adaptive question difficulty and user configuration management using Node.js and Docker`,
-        image: "/images/noesis.png",
-        link: "https://github.com/Matt-Griff/si3-ps6-noesis"
-    }
-];
+const lang = getLang(Astro.currentLocale);
+const t = useTranslations(lang);
 ---
 
 <section id="projects" class="mx-auto max-w-6xl px-6 py-24">
-    <SectionHeader index="04" title="Most relevant projects" />
+    <SectionHeader index="04" title={t.projects.title} />
 
     <div class="grid gap-6 md:grid-cols-2">
-        {projects.map((project) => (
-            <ProjectCard {...project} />
-        ))}
+        {projects.map((project) => {
+            const text = t.projects.items[project.slug];
+            return (
+                <ProjectCard
+                    title={text.title}
+                    summary={text.summary}
+                    tools={project.tools}
+                    image={project.image}
+                    link={project.link}
+                    href={localizePath(`/projects/${project.slug}/`, lang)}
+                    detailsLabel={t.projects.details}
+                    githubLabel={t.projects.onGithub}
+                />
+            );
+        })}
     </div>
 
     <div class="mt-12 flex justify-center" data-reveal>
         <a
-            href="https://github.com/Matt-Griff"
+            href={github}
             target="_blank"
             rel="noopener noreferrer"
             class="group inline-flex items-center gap-2 rounded-full border border-tint/15 px-6 py-3 text-sm font-semibold transition-colors hover:bg-tint/5"
         >
-            See more on my GitHub
+            {t.projects.seeMore}
             <span class="transition-transform group-hover:translate-x-1">→</span>
         </a>
     </div>

@@ -1,14 +1,31 @@
 ---
 import '../styles/global.css';
+import Navbar from '../components/Navbar.astro';
+import Controls from '../components/Controls.astro';
+import Footer from '../components/Footer.astro';
+import { getLang, useTranslations } from '../i18n';
+
+interface Props {
+  /** Page-specific title; the site name is appended. */
+  title?: string;
+  description?: string;
+  /** Override the language switch target (e.g. the 404 page has no translated twin). */
+  langSwitchHref?: string;
+}
+
+const lang = getLang(Astro.currentLocale);
+const t = useTranslations(lang);
+const title = Astro.props.title ? `${Astro.props.title} · ${t.meta.title}` : t.meta.title;
+const description = Astro.props.description ?? t.meta.description;
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang={lang}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#09090b" />
-    <meta name="description" content="Portfolio of Matthieu Griffonnet, final-year computer science engineering student at Polytech Nice Sophia, looking for an embedded systems internship." />
+    <meta name="description" content={description} />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <link rel="manifest" href="/manifest.json" />
@@ -18,7 +35,7 @@ import '../styles/global.css';
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap"
       rel="stylesheet"
     />
-    <title>Matthieu Griffonnet's PortFolio</title>
+    <title>{title}</title>
     {/* Runs before first paint so the page never flashes the wrong theme. */}
     <script is:inline>
       (function () {
@@ -49,7 +66,10 @@ import '../styles/global.css';
       <div class="absolute top-[30%] -left-40 h-[24rem] w-[24rem] rounded-full bg-accent/10 blur-3xl"></div>
     </div>
 
+    <Navbar />
+    <Controls langSwitchHref={Astro.props.langSwitchHref} />
     <slot />
+    <Footer />
 
     <script>
       import '../scripts/reveal';

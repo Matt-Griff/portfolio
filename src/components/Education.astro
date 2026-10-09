@@ -1,48 +1,16 @@
 ---
 import SectionHeader from './SectionHeader.astro';
+import { education } from '../data/site';
+import { useTranslations } from '../i18n';
 
-const educationData = [
-    {
-        logo: "/images/valbonne.png",
-        school: "Valbonne Simone Veil High School",
-        degree: "Baccalaureate",
-        years: "2019 - 2022",
-        description: "Specialty: Mathematics and Computer Science",
-    },
-    {
-        logo: "/images/marine.png",
-        school: "Naval Military Preparation",
-        degree: "Military Preparation Certificate",
-        years: "2021 - 2022",
-        description: "Level: Honors (Mention Bien)",
-    },
-    {
-        logo: "/images/iut.png",
-        school: "IUT Nice Côte d'Azur",
-        degree: "Bachelor's Degree in Computer Science",
-        years: "2022 - 2024",
-        description: "Application development track: design, development, validation",
-    },
-    {
-        logo: "/images/polytech.png",
-        school: "Polytech Nice Sophia",
-        degree: "Engineering degree in Computer Science",
-        years: "2024 - 2027",
-    },
-    {
-        logo: "/images/polytech.png",
-        school: "Maybe in your Company!",
-        degree: "What's next ?",
-        years: "2027 - ...",
-    }
-];
+const t = useTranslations(Astro.currentLocale);
 
 // Oldest at the top: the rocket flies down from the first diploma to "What's next ?".
-const entries = educationData;
+const entries = education.map(({ id, logo, years }) => ({ ...t.education.items[id], logo, years }));
 ---
 
 <section id="education" class="mx-auto flex max-w-5xl flex-col justify-center px-6 py-24 md:min-h-screen md:py-20">
-    <SectionHeader index="05" title="Education" />
+    <SectionHeader index="05" title={t.education.title} />
 
     <div class="relative" data-timeline>
         {/* Zig-zag flight path and rocket, positioned by the script below (desktop only). */}
@@ -182,6 +150,8 @@ const entries = educationData;
                 start: 'top top',
                 end: '+=1400',
                 pin: true,
+                // Pinning adds scroll space: refresh this before the reveal triggers further down the page.
+                refreshPriority: 1,
                 scrub: 0.6,
                 invalidateOnRefresh: true,
                 onRefresh: markReached,

@@ -1,0 +1,46 @@
+---
+import ThemeToggle from './ThemeToggle.astro';
+import { getLang, switchLangPath, useTranslations } from '../i18n';
+
+interface Props {
+    langSwitchHref?: string;
+}
+
+const lang = getLang(Astro.currentLocale);
+const t = useTranslations(lang);
+const other = lang === 'en' ? 'fr' : 'en';
+const otherHref = Astro.props.langSwitchHref ?? switchLangPath(Astro.url.pathname, other);
+---
+
+{/* Fixed top-right: language switch and theme toggle. */}
+<div class="fixed top-4 right-4 z-50 flex items-center gap-2">
+    <a
+        href={otherHref}
+        hreflang={other}
+        lang={other}
+        aria-label={t.controls.switchLang}
+        title={t.controls.switchLang}
+        data-lang-switch
+        class="flex h-11 items-center rounded-full border border-tint/10 bg-surface/50 px-1 text-xs font-semibold shadow-lg shadow-black/30 backdrop-blur-xl"
+    >
+        {(['en', 'fr'] as const).map((code) => (
+            <span
+                class:list={[
+                    'rounded-full px-2.5 py-1.5 uppercase transition-colors',
+                    code === lang ? 'bg-tint/10 text-ink' : 'text-muted',
+                ]}
+            >
+                {code}
+            </span>
+        ))}
+    </a>
+    <ThemeToggle />
+</div>
+
+<script>
+    // Keep the current section when switching language.
+    document.querySelector<HTMLAnchorElement>('[data-lang-switch]')?.addEventListener('click', (event) => {
+        const link = event.currentTarget as HTMLAnchorElement;
+        if (location.hash) link.hash = location.hash;
+    });
+</script>

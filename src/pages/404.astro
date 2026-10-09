@@ -1,0 +1,23 @@
+---
+// Single 404 for both languages: shows English and French.
+import Layout from '../layouts/Layout.astro';
+import en from '../i18n/en';
+import fr from '../i18n/fr';
+---
+
+<Layout title={en.notFound.title} langSwitchHref="/fr/">
+    <section class="mx-auto flex min-h-[80vh] max-w-3xl flex-col items-center justify-center px-6 text-center">
+        <p class="font-display text-8xl font-bold text-gradient md:text-9xl">404</p>
+        <h1 class="mt-6 font-display text-3xl font-bold">{en.notFound.title}</h1>
+        <p class="mt-2 text-muted">{en.notFound.text}</p>
+        <p lang="fr" class="mt-6 text-sm text-muted">{fr.notFound.title}. {fr.notFound.text}</p>
+        <div class="mt-10 flex flex-wrap justify-center gap-4">
+            <a href="/" class="rounded-full bg-ink px-6 py-3 text-sm font-semibold text-canvas transition-transform hover:-translate-y-0.5">
+                {en.notFound.home}
+            </a>
+            <a href="/fr/" lang="fr" class="rounded-full border border-tint/15 px-6 py-3 text-sm font-semibold text-ink transition-colors hover:bg-tint/5">
+                {fr.notFound.home}
+            </a>
+        </div>
+    </section>
+</Layout>

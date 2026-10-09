@@ -4,11 +4,13 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Overview
 
-Single-page personal portfolio for Matthieu Griffonnet, built with Astro (static output, no UI framework), Tailwind CSS v4, and GSAP. It is deployed to Cloudflare Pages with build command `npm run build` and output directory `dist`, and it uses no adapter. The page is one long scroll of sections; there is no routing beyond `src/pages/index.astro`.
+Personal portfolio for Matthieu Griffonnet, built with Astro (static output, no UI framework), Tailwind CSS v4, and GSAP. It is deployed to Cloudflare Pages with build command `npm run build` and output directory `dist`, and it uses no adapter.
+
+The site has a one-page home, a detail page per project, and a 404 page. Each exists in English (`/`) and French (`/fr/`).
 
 ## Commands
 
-- `npm run dev` (or `npm start`): dev server, by default at http://localhost:4321
+- `npm run dev` (or `npm start`): dev server, by default at http://localhost:4321. Restart it after creating new files: Tailwind's dev scanner can miss classes that only appear in new files.
 - `npm run build`: static build to `dist/`
 - `npm run preview`: serve the built `dist/`
 
@@ -16,18 +18,23 @@ There are no tests and no linter configured. `npm run build` is the check: it fa
 
 ## Architecture
 
-- `src/pages/index.astro` wraps the sections in `src/layouts/Layout.astro`, in this order: `Navbar`, `ThemeToggle`, `Name` (hero), `AboutMe`, `Experience`, `Skill`, `ProjectsHolder`, `Education`, `Contact`, `Footer`. All of them live in `src/components/*.astro`.
-- The layout owns `<head>`: meta tags, the favicon and manifest, Google Fonts (Inter and Space Grotesk), and the inline theme script. It also imports `src/styles/global.css`, loads `src/scripts/reveal.ts`, and renders the fixed background glows.
-- **Section headers:** `SectionHeader.astro` takes `index` (for example `"03"`) and `title`. The indexes are hardcoded per section, so renumber them when you add or reorder a section.
-- **Navigation:** `Navbar` lists in-page anchors (`#about`, `#experience`, `#skills`, `#projects`, `#education`). Each section sets its own `id` on its `<section>`. An IntersectionObserver highlights the active link. On phones the navbar docks at the bottom (`sm:` and up it sits at the top); it fits only 5 links at phone width.
-- **Content is hardcoded data arrays** in the component frontmatter:
-  - `experiences` in `Experience.astro`
-  - `skillGroups` in `Skill.astro`: each skill has `name`, a brand `color`, an optional devicon `icon` path, and `invert` for black logos
-  - `stackIcons` in `StackLoop.astro`
-  - `projects` in `ProjectsHolder.astro`, rendered through `ProjectCard.astro`, which splits `description` into paragraphs on `\n\n`
-  - `educationData` in `Education.astro`
-  - `contacts` in `Contact.astro`
-- **Skills appear twice:** as chips in `Skill.astro` and as icons in the `StackLoop.astro` marquee. Update both when the tech stack changes.
+- **Routes:**
+  - `src/pages/index.astro` and `src/pages/fr/index.astro` both render `src/components/HomePage.astro`.
+  - `src/pages/projects/[slug].astro` and `src/pages/fr/projects/[slug].astro` both render `ProjectPage.astro`.
+  - `src/pages/404.astro` shows English and French together.
+- **Language:** Astro i18n in `astro.config.mjs` (`defaultLocale: 'en'`, `prefixDefaultLocale: false`). Components read the language with `Astro.currentLocale`, so the same component serves both languages.
+- **Layout:** `src/layouts/Layout.astro` renders the `<head>` (localised title and description, favicon, Google Fonts, inline theme script), then `Navbar`, `Controls`, the page, and `Footer`. `Controls` is the fixed top-right group: the EN/FR switch and `ThemeToggle`.
+- **Home sections** (in `HomePage.astro`): `Name` (hero), `AboutMe`, `Experience`, `Skill`, `ProjectsHolder`, `Education`, `Contact`. Each sets its own `id`.
+- **Section headers:** `SectionHeader.astro` takes `index` (for example `"03"`) and `title`. The indexes are hardcoded, so renumber them when you add or reorder a section.
+- **Navbar:** links to `#id` on the home page and to `/#id` (or `/fr/#id`) elsewhere. An IntersectionObserver highlights the active link. Below `lg` the bar docks at the bottom of the screen and hides the Contact link; from `lg` it sits at the top, centred.
+
+## Content and translations
+
+- All visible text lives in `src/i18n/en.ts` and `src/i18n/fr.ts`. `fr.ts` is typed as `Dictionary` (the type of `en.ts`), so the two must keep the same keys. Get the dictionary with `useTranslations(Astro.currentLocale)`, and build links with `localizePath(path, lang)`. Some strings contain inline `<span>` markup and are rendered with `set:html`.
+- Language-independent data lives in `src/data/site.ts`: contact links, experience stacks, project slugs, images, links, tools and galleries, and education logos and years. The dictionaries key their text by the same ids and slugs.
+- **Adding a project:** add an entry to `projects` in `site.ts`, then add text under `projects.items[slug]` in both dictionaries (`summary` for the card; `intro`, `sections`, `team` and `captions` for the page).
+- **Skills** are the exception: `skillGroups` in `Skill.astro` holds each skill's name, brand `color`, devicon `icon` path, and `invert` (for black logos). Only the group titles and spoken-language names come from the dictionaries. Skills also appear in the `StackLoop.astro` marquee, so update both.
+- The hero's rotating taglines are passed to the client script as JSON in a `data-citations` attribute.
 
 ## Theming
 
@@ -43,11 +50,12 @@ Animations use plain client `<script>` tags, which Astro bundles. There are no f
 
 - `Name.astro`: the name is real text in the HTML, so search engines and screen readers see it. GSAP `ScrambleTextPlugin` scrambles it in with `gsap.from`, and `TextPlugin` rotates the tagline, skipping while the tab is hidden.
 - `src/scripts/reveal.ts`: ScrollTrigger scroll reveals. Add `data-reveal` to fade in a single element, or `data-reveal-batch` for cards that should animate in together with a stagger.
-- `Education.astro`: on desktop the section pins (`end: '+=1400'`) while a rocket flies a zig-zag `MotionPathPlugin` path down through the alternating cards. The path is rebuilt from card positions on every ScrollTrigger refresh. Cards switch `data-reached` as the rocket passes, and that check runs in the timeline's `onUpdate` so it follows the smoothed scrub. On phones and under reduced motion, nothing pins and every card shows as reached.
+- `Education.astro`: on desktop the section pins (`end: '+=1400'`, with `refreshPriority: 1` so reveal triggers further down the page account for the pin's extra scroll space) while a rocket flies a zig-zag `MotionPathPlugin` path down through the alternating cards. The path is rebuilt from card positions on every ScrollTrigger refresh. Cards switch `data-reached` as the rocket passes, and that check runs in the timeline's `onUpdate` so it follows the smoothed scrub. On phones and under reduced motion, nothing pins and every card shows as reached.
 - `StackLoop`: a pure-CSS infinite marquee in `src/styles/stack-loop.css`. That stylesheet is global, so keep its class names prefixed with `marquee-`. A generic class such as `.group` once collided with Tailwind's `group` and made every project card scroll.
 
 ## Assets
 
-- Images are referenced as `/images/...`, which resolves to `public/images/`.
-- The project screenshots (`letsGo.png`, `erp.png`, `port.png`, `noesis.png`) and school logos (`valbonne.png`, `marine.png`, `iut.png`, `polytech.png`) are not in the repo yet, so they show as broken until they're added.
+- Images are referenced as `/images/...`, which resolves to `public/images/`. The ERP screenshots are in `public/images/projects/` (`.webp`).
+- These images are not in the repo yet and show as broken until they're added: the project screenshots `letsGo.png`, `port.png` and `noesis.png`, and the school logos `valbonne.png`, `marine.png`, `iut.png` and `polytech.png`.
+- The hero's Download CV button links to `public/cv/cv-en.pdf` and `public/cv/cv-fr.pdf`, which the owner provides.
 - The favicon is `public/favicon.svg`, with PNG versions for Apple devices and the manifest. If you change the SVG, regenerate the PNGs with `magick`.

@@ -1,6 +1,9 @@
 ---
 import SectionHeader from './SectionHeader.astro';
 import StackLoop from './StackLoop.astro';
+import { useTranslations } from '../i18n';
+
+const t = useTranslations(Astro.currentLocale);
 
 // Each skill: brand colour (tints the chip) and optional devicon logo path.
 // `invert` flips black logos so they stay visible in dark mode.
@@ -8,7 +11,7 @@ type SkillItem = { name: string; color: string; icon?: string; invert?: boolean 
 
 const skillGroups: { title: string; items: SkillItem[] }[] = [
     {
-        title: "Programming Languages",
+        title: t.skills.groups.languages,
         items: [
             { name: "C", color: "#00599C", icon: "c/c-original" },
             { name: "Java", color: "#ED8B00", icon: "java/java-original" },
@@ -24,7 +27,7 @@ const skillGroups: { title: string; items: SkillItem[] }[] = [
         ],
     },
     {
-        title: "Frameworks & Tools",
+        title: t.skills.groups.frameworks,
         items: [
             { name: "Angular", color: "#DD0031", icon: "angular/angular-original" },
             { name: "React", color: "#61DAFB", icon: "react/react-original" },
@@ -43,7 +46,7 @@ const skillGroups: { title: string; items: SkillItem[] }[] = [
         ],
     },
     {
-        title: "Computer Vision & AI",
+        title: t.skills.groups.ai,
         items: [
             { name: "PyTorch", color: "#EE4C2C", icon: "pytorch/pytorch-original" },
             { name: "OpenCV", color: "#5C3EE8", icon: "opencv/opencv-original" },
@@ -53,11 +56,11 @@ const skillGroups: { title: string; items: SkillItem[] }[] = [
         ],
     },
     {
-        title: "Spoken Languages",
+        title: t.skills.groups.spoken,
         items: [
-            { name: "French", color: "#0055A4" },
-            { name: "English (C1 – TOEIC 960)", color: "#C8102E" },
-            { name: "Spanish (B1)", color: "#F1BF00" },
+            { name: t.skills.spoken[0], color: "#0055A4" },
+            { name: t.skills.spoken[1], color: "#C8102E" },
+            { name: t.skills.spoken[2], color: "#F1BF00" },
         ],
     },
 ];
@@ -67,7 +70,7 @@ const iconBase = "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons";
 
 <section id="skills" class="py-24">
     <div class="mx-auto max-w-6xl px-6">
-        <SectionHeader index="03" title="Skills" />
+        <SectionHeader index="03" title={t.skills.title} />
 
         <div class="grid gap-6 md:grid-cols-2">
             {skillGroups.map((group) => (
