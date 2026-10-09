@@ -1,6 +1,6 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "portfolio",
+  "name": "matthieu",
   "compatibility_date": "2026-10-09",
   // Static site: serve the Astro build output, with dist/404.html for unknown paths.
   "assets": {

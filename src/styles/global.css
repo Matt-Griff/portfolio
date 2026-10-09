@@ -10,8 +10,8 @@
     /* Overlay colour for borders and subtle fills: white on dark, black on light. */
     --color-tint: #ffffff;
 
-    --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
-    --font-display: "Space Grotesk", "Inter", ui-sans-serif, system-ui, sans-serif;
+    --font-sans: "Inter Variable", "Inter", ui-sans-serif, system-ui, sans-serif;
+    --font-display: "Space Grotesk Variable", "Space Grotesk", "Inter Variable", ui-sans-serif, system-ui, sans-serif;
 }
 
 /* Theme is set on <html data-theme> by the inline script in Layout.astro. */
@@ -30,13 +30,6 @@
 
 :root[data-theme="dark"] {
     color-scheme: dark;
-}
-
-@font-face {
-    font-family: 'MOELA';
-    src: url('/fonts/MOELA-Light.ttf') format('truetype');
-    font-weight: normal;
-    font-style: normal;
 }
 
 html {

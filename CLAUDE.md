@@ -4,7 +4,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Overview
 
-Personal portfolio for Matthieu Griffonnet, built with Astro (static output, no UI framework), Tailwind CSS v4, and GSAP. It is deployed to Cloudflare Pages with build command `npm run build` and output directory `dist`, and it uses no adapter.
+Personal portfolio for Matthieu Griffonnet, built with Astro (static output, no UI framework), Tailwind CSS v4, and GSAP. It is deployed as a Cloudflare Worker serving static assets, with no adapter. `wrangler.jsonc` points the Worker at `dist` (with `dist/404.html` for unknown paths), and `.node-version` pins Node 22 for the build. Cloudflare builds and deploys on every push to `main`. The Worker `name` in `wrangler.jsonc` must match the Worker's name in the Cloudflare dashboard.
+
+The public address is `site` in `astro.config.mjs`. Canonical URLs, link previews, the sitemap and `public/robots.txt` all use it, so update both places if the domain changes.
 
 The site has a one-page home, a detail page per project, and a 404 page. Each exists in English (`/`) and French (`/fr/`).
 
@@ -23,7 +25,8 @@ There are no tests and no linter configured. `npm run build` is the check: it fa
   - `src/pages/projects/[slug].astro` and `src/pages/fr/projects/[slug].astro` both render `ProjectPage.astro`.
   - `src/pages/404.astro` shows English and French together.
 - **Language:** Astro i18n in `astro.config.mjs` (`defaultLocale: 'en'`, `prefixDefaultLocale: false`). Components read the language with `Astro.currentLocale`, so the same component serves both languages.
-- **Layout:** `src/layouts/Layout.astro` renders the `<head>` (localised title and description, favicon, Google Fonts, inline theme script), then `Navbar`, `Controls`, the page, and `Footer`. `Controls` is the fixed top-right group: the EN/FR switch and `ThemeToggle`.
+- **Layout:** `src/layouts/Layout.astro` renders the `<head>` (localised title and description, canonical and `hreflang` links, Open Graph tags, favicon, inline theme script), then `Navbar`, `Controls`, the page, and `Footer`. `Controls` is the fixed top-right group: the EN/FR switch and `ThemeToggle`. Its `image` prop sets the link-preview image (default `public/og.jpg`; project pages pass `public/images/og/<screenshot>.jpg`), and `noindex` keeps a page out of search results (used by the 404).
+- **SEO:** `@astrojs/sitemap` generates `sitemap-index.xml` with EN/FR alternates and leaves out the 404.
 - **Home sections** (in `HomePage.astro`): `Name` (hero), `AboutMe`, `Experience`, `Skill`, `ProjectsHolder`, `Education`, `Contact`. Each sets its own `id`.
 - **Section headers:** `SectionHeader.astro` takes `index` (for example `"03"`) and `title`. The indexes are hardcoded, so renumber them when you add or reorder a section.
 - **Navbar:** links to `#id` on the home page and to `/#id` (or `/fr/#id`) elsewhere. An IntersectionObserver highlights the active link. Below `lg` the bar docks at the bottom of the screen and hides the Contact link; from `lg` it sits at the top, centred.
@@ -33,7 +36,7 @@ There are no tests and no linter configured. `npm run build` is the check: it fa
 - All visible text lives in `src/i18n/en.ts` and `src/i18n/fr.ts`. `fr.ts` is typed as `Dictionary` (the type of `en.ts`), so the two must keep the same keys. Get the dictionary with `useTranslations(Astro.currentLocale)`, and build links with `localizePath(path, lang)`. Some strings contain inline `<span>` markup and are rendered with `set:html`.
 - Language-independent data lives in `src/data/site.ts`: contact links, experience stacks, project slugs, images, links, tools and galleries, and education logos and years. The dictionaries key their text by the same ids and slugs.
 - **Adding a project:** add an entry to `projects` in `site.ts`, then add text under `projects.items[slug]` in both dictionaries (`summary` for the card; `intro`, `sections`, `team` and `captions` for the page).
-- **Skills** are the exception: `skillGroups` in `Skill.astro` holds each skill's name, brand `color`, devicon `icon` path, and `invert` (for black logos). Only the group titles and spoken-language names come from the dictionaries. Skills also appear in the `StackLoop.astro` marquee, so update both.
+- **Skills** are the exception: `skillGroups` in `Skill.astro` holds each skill's name, brand `color`, devicon `icon` file name, and `invert` (for black logos). Only the group titles and spoken-language names come from the dictionaries. Skills also appear in the `StackLoop.astro` marquee, so update both. Logos are self-hosted copies of devicon v2.17.0 in `public/icons/devicon/`; to add one, download it from `https://cdn.jsdelivr.net/gh/devicons/devicon@v2.17.0/icons/<name>/<file>.svg` into that folder.
 - The hero's rotating taglines are passed to the client script as JSON in a `data-citations` attribute.
 
 ## Theming
@@ -58,4 +61,6 @@ Animations use plain client `<script>` tags, which Astro bundles. There are no f
 - Images are referenced as `/images/...`, which resolves to `public/images/`. Project screenshots are `.webp` files in `public/images/projects/`.
 - School logos for the Education timeline are 256px square PNGs in `public/images/` (`polytech.png`, `iut.png` = Université Côte d'Azur symbol, `marine.png` = PMM insignia, `valbonne.png` = generic school icon, since the lycée has no published logo).
 - The hero's Download CV button links to `public/cv/cv-en.pdf` and `public/cv/cv-fr.pdf`, which the owner provides.
+- Fonts are self-hosted through `@fontsource-variable/inter` and `@fontsource-variable/space-grotesk`, imported in `Layout.astro`. The site loads nothing from third-party servers.
+- Link-preview images are 1200×630 JPGs: `public/og.jpg` (a screenshot of the hero) and the per-project crops in `public/images/og/`. Regenerate a project crop with `magick <screenshot>.webp -resize 1200x630^ -gravity north -extent 1200x630 -quality 85 <name>.jpg` when its screenshot changes.
 - The favicon is `public/favicon.svg`, with PNG versions for Apple devices and the manifest. If you change the SVG, regenerate the PNGs with `magick`.

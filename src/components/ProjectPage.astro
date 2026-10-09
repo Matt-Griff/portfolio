@@ -20,7 +20,7 @@ const next = projects[(index + 1) % projects.length];
 const pageHref = (slug: string) => localizePath(`/projects/${slug}/`, lang);
 ---
 
-<Layout title={text.title} description={text.summary}>
+<Layout title={text.title} description={text.summary} image={project.image.replace("/projects/", "/og/").replace(".webp", ".jpg")}>
     <article class="mx-auto max-w-4xl px-6 pt-28 pb-24 lg:pt-32">
         <a
             href={`${localizePath('/', lang)}#projects`}
