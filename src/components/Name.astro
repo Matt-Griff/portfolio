@@ -1,11 +1,11 @@
 <section class="mx-auto flex min-h-[92vh] max-w-6xl flex-col justify-center px-6 pt-24">
     <p class="mb-6 font-display text-sm font-semibold uppercase tracking-[0.3em] text-muted">Software engineer in training</p>
     <h1 class="font-display text-6xl leading-[0.95] font-bold tracking-tight md:text-9xl">
-        <span class="name block min-h-[1em]"></span>
-        <span class="last-name text-gradient block min-h-[1em] md:ml-32"></span>
+        <span class="name block min-h-[1em]">Matthieu</span>
+        <span class="last-name text-gradient block min-h-[1em] md:ml-32">Griffonnet</span>
     </h1>
     <p class="mt-8 flex min-h-[2em] items-center text-xl text-muted md:text-2xl">
-        <span class="desc"></span>
+        <span class="desc" aria-live="off">I'm looking for an embedded systems internship</span>
         <span class="ml-1 inline-block h-6 w-0.5 animate-pulse bg-accent md:h-7"></span>
     </p>
     <div class="mt-12 flex flex-wrap gap-4">
@@ -32,10 +32,10 @@
     gsap.registerPlugin(ScrambleTextPlugin, TextPlugin);
 
     const citations = [
+        "I'm looking for an embedded systems internship",
         "I'm passionate about IT",
-        "I'm 21 years old",
-        "I'm pursuing an engineering degree in IT",
-        "I love football",
+        "I'm a final-year engineering student at Polytech Nice Sophia",
+        "I play in my university's football team",
         "I'm always eager to learn new technologies",
         "I enjoy working on challenging coding projects",
         "Teamwork is at the heart of everything I do",
@@ -44,28 +44,35 @@
         "I'm currently improving my skills in web development",
     ];
 
-    gsap.to(".name", {
-        duration: 1,
-        scrambleText: {
-            text: "Matthieu"
-        }
-    });
+    // The name is in the HTML (for search engines and screen readers); scramble it in from scratch.
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-    gsap.to(".last-name", {
-        duration: 1,
-        scrambleText: {
-            text: "Griffonnet"
-        }
-    });
+    if (!reducedMotion) {
+        gsap.from(".name", {
+            duration: 1,
+            scrambleText: {
+                text: ""
+            }
+        });
+
+        gsap.from(".last-name", {
+            duration: 1,
+            scrambleText: {
+                text: ""
+            }
+        });
+    }
 
     async function changeDesc() {
         while (true) {
+            await new Promise(resolve => setTimeout(resolve, 4000));
+            // Skip work while the tab is in the background.
+            if (document.hidden) continue;
             const citation = citations[Math.floor(Math.random() * citations.length)];
             gsap.to(".desc", {
-                duration: 2,
+                duration: reducedMotion ? 0 : 2,
                 text: citation,
             });
-            await new Promise(resolve => setTimeout(resolve, 4000));
         }
     }
 

@@ -2,24 +2,67 @@
 import SectionHeader from './SectionHeader.astro';
 import StackLoop from './StackLoop.astro';
 
-const skillGroups = [
+// Each skill: brand colour (tints the chip) and optional devicon logo path.
+// `invert` flips black logos so they stay visible in dark mode.
+type SkillItem = { name: string; color: string; icon?: string; invert?: boolean };
+
+const skillGroups: { title: string; items: SkillItem[] }[] = [
     {
         title: "Programming Languages",
-        items: ["C", "Java", "TypeScript", "JavaScript", "Python", "SQL", "C++", "Bash", "HTML", "CSS", "C#"],
+        items: [
+            { name: "C", color: "#00599C", icon: "c/c-original" },
+            { name: "Java", color: "#ED8B00", icon: "java/java-original" },
+            { name: "TypeScript", color: "#3178C6", icon: "typescript/typescript-original" },
+            { name: "JavaScript", color: "#F7DF1E", icon: "javascript/javascript-original" },
+            { name: "Python", color: "#3776AB", icon: "python/python-original" },
+            { name: "SQL", color: "#4479A1", icon: "postgresql/postgresql-original" },
+            { name: "C++", color: "#00599C", icon: "cplusplus/cplusplus-original" },
+            { name: "Bash", color: "#4EAA25", icon: "bash/bash-original" },
+            { name: "HTML", color: "#E34F26", icon: "html5/html5-original" },
+            { name: "CSS", color: "#1572B6", icon: "css3/css3-original" },
+            { name: "C#", color: "#9B4F96", icon: "csharp/csharp-original" },
+        ],
     },
     {
         title: "Frameworks & Tools",
-        items: ["Angular", "React", "Node.js", "FastAPI", "Docker", "Express.js", "Spring Boot", ".Net", "Git", "Linux", "JUnit", "RabbitMQ", "Cucumber", "CI/CD"],
+        items: [
+            { name: "Angular", color: "#DD0031", icon: "angular/angular-original" },
+            { name: "React", color: "#61DAFB", icon: "react/react-original" },
+            { name: "Node.js", color: "#339933", icon: "nodejs/nodejs-original" },
+            { name: "FastAPI", color: "#009688", icon: "fastapi/fastapi-original" },
+            { name: "Docker", color: "#2496ED", icon: "docker/docker-original" },
+            { name: "Express.js", color: "#808080", icon: "express/express-original", invert: true },
+            { name: "Spring Boot", color: "#6DB33F", icon: "spring/spring-original" },
+            { name: ".Net", color: "#512BD4", icon: "dot-net/dot-net-original" },
+            { name: "Git", color: "#F05032", icon: "git/git-original" },
+            { name: "Linux", color: "#FCC624", icon: "linux/linux-original" },
+            { name: "JUnit", color: "#25A162", icon: "junit/junit-original" },
+            { name: "RabbitMQ", color: "#FF6600", icon: "rabbitmq/rabbitmq-original" },
+            { name: "Cucumber", color: "#23D96C", icon: "cucumber/cucumber-plain" },
+            { name: "CI/CD", color: "#2088FF", icon: "githubactions/githubactions-original" },
+        ],
     },
     {
         title: "Computer Vision & AI",
-        items: ["PyTorch", "OpenCV", "FAISS", "Deep Learning", "Machine Learning"],
+        items: [
+            { name: "PyTorch", color: "#EE4C2C", icon: "pytorch/pytorch-original" },
+            { name: "OpenCV", color: "#5C3EE8", icon: "opencv/opencv-original" },
+            { name: "FAISS", color: "#0467DF" },
+            { name: "Deep Learning", color: "#A855F7" },
+            { name: "Machine Learning", color: "#06B6D4" },
+        ],
     },
     {
         title: "Spoken Languages",
-        items: ["French", "English (C1 – TOEIC 960)", "Spanish (B1)"],
+        items: [
+            { name: "French", color: "#0055A4" },
+            { name: "English (C1 – TOEIC 960)", color: "#C8102E" },
+            { name: "Spanish (B1)", color: "#F1BF00" },
+        ],
     },
 ];
+
+const iconBase = "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons";
 ---
 
 <section id="skills" class="py-24">
@@ -32,8 +75,16 @@ const skillGroups = [
                     <h3 class="mb-6 font-display text-lg font-semibold">{group.title}</h3>
                     <ul class="flex flex-wrap gap-2">
                         {group.items.map((item) => (
-                            <li class="rounded-full border border-tint/10 bg-tint/5 px-4 py-1.5 text-sm text-muted transition-colors hover:border-accent/50 hover:text-ink">
-                                {item}
+                            <li
+                                class="flex items-center gap-2 rounded-full border border-[color-mix(in_oklab,var(--brand)_35%,transparent)] bg-[color-mix(in_oklab,var(--brand)_12%,transparent)] px-3 py-1.5 text-sm font-medium text-ink transition-colors hover:bg-[color-mix(in_oklab,var(--brand)_22%,transparent)]"
+                                style={`--brand: ${item.color}`}
+                            >
+                                {item.icon ? (
+                                    <img src={`${iconBase}/${item.icon}.svg`} alt="" class:list={['h-4 w-4', item.invert && 'dark:invert']} loading="lazy" />
+                                ) : (
+                                    <span class="h-2 w-2 rounded-full bg-[var(--brand)]"></span>
+                                )}
+                                {item.name}
                             </li>
                         ))}
                     </ul>
