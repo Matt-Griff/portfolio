@@ -13,7 +13,8 @@ const t = useTranslations(Astro.currentLocale);
         {t.hero.badge}
     </p>
     <p class="mb-6 font-display text-sm font-semibold uppercase tracking-[0.3em] text-muted">{t.hero.eyebrow}</p>
-    <h1 class="font-display text-6xl leading-[0.95] font-bold tracking-tight md:text-9xl">
+    {/* overflow-x-clip: scrambled letters can be wider than the name; on phones they would widen the page and shift the fixed controls. */}
+    <h1 class="overflow-x-clip font-display text-6xl leading-[0.95] font-bold tracking-tight md:text-9xl">
         <span class="name block min-h-[1em]">Matthieu</span>
         <span class="last-name text-gradient block min-h-[1em] md:ml-32">Griffonnet</span>
     </h1>
@@ -65,14 +66,18 @@ const t = useTranslations(Astro.currentLocale);
         gsap.from(".name", {
             duration: 1,
             scrambleText: {
-                text: ""
+                text: "",
+                // Lowercase letters are close to the name's own widths, so the line barely moves.
+                chars: "lowerCase"
             }
         });
 
         gsap.from(".last-name", {
             duration: 1,
             scrambleText: {
-                text: ""
+                text: "",
+                // Lowercase letters are close to the name's own widths, so the line barely moves.
+                chars: "lowerCase"
             }
         });
     }

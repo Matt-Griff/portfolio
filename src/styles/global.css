@@ -32,6 +32,12 @@
     color-scheme: dark;
 }
 
+html,
+body {
+    /* Nothing may widen the page sideways (mobile browsers zoom out instead). */
+    overflow-x: clip;
+}
+
 html {
     scroll-behavior: smooth;
     /* Thin, minimal scrollbar (Firefox; Chrome 121+ also reads these). */

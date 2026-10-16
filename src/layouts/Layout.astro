@@ -86,7 +86,7 @@ const image = new URL(Astro.props.image ?? '/og.jpg', Astro.site);
       })();
     </script>
   </head>
-  <body class="relative min-h-screen overflow-x-hidden">
+  <body class="relative min-h-screen">
     {/* Soft background glows: they give the navbar's blur something to show. */}
     <div aria-hidden="true" class="pointer-events-none fixed inset-0 -z-10">
       <div class="absolute -top-40 left-1/2 h-[36rem] w-[36rem] -translate-x-1/2 rounded-full bg-accent/15 blur-3xl"></div>
