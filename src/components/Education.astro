@@ -9,7 +9,7 @@ const t = useTranslations(Astro.currentLocale);
 const entries = education.map(({ id, logo, years }) => ({ ...t.education.items[id], logo, years }));
 ---
 
-<section id="education" class="mx-auto flex max-w-5xl flex-col justify-center px-6 py-24 md:min-h-screen md:py-20">
+<section id="education" class="mx-auto flex max-w-5xl flex-col justify-center px-6 py-16 md:min-h-screen md:py-20">
     <SectionHeader index="05" title={t.education.title} />
 
     <div class="relative" data-timeline>

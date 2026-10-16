@@ -12,8 +12,8 @@ const other = lang === 'en' ? 'fr' : 'en';
 const otherHref = Astro.props.langSwitchHref ?? switchLangPath(Astro.url.pathname, other);
 ---
 
-{/* Fixed top-right: language switch and theme toggle. */}
-<div class="fixed top-4 right-4 z-50 flex items-center gap-2">
+{/* Fixed top-right: language switch and theme toggle. Below lg it hides while scrolling down so it never covers the text. */}
+<div data-controls class="fixed top-4 right-4 z-50 flex items-center gap-2 transition-transform duration-300 data-[hidden]:-translate-y-20 lg:data-[hidden]:translate-y-0">
     <a
         href={otherHref}
         hreflang={other}
@@ -43,4 +43,18 @@ const otherHref = Astro.props.langSwitchHref ?? switchLangPath(Astro.url.pathnam
         const link = event.currentTarget as HTMLAnchorElement;
         if (location.hash) link.hash = location.hash;
     });
+
+    // Hide while scrolling down, show again when scrolling up or near the top (the CSS ignores it from lg).
+    const controls = document.querySelector<HTMLElement>('[data-controls]')!;
+    let lastY = window.scrollY;
+    window.addEventListener(
+        'scroll',
+        () => {
+            const y = window.scrollY;
+            if (Math.abs(y - lastY) < 8) return;
+            controls.toggleAttribute('data-hidden', y > lastY && y > 80);
+            lastY = y;
+        },
+        { passive: true }
+    );
 </script>
