@@ -5,7 +5,7 @@ const fr: Dictionary = {
     meta: {
         title: "Portfolio de Matthieu Griffonnet",
         description:
-            "Portfolio de Matthieu Griffonnet, étudiant en dernière année du cycle ingénieur en informatique à Polytech Nice Sophia, à la recherche d’un stage en systèmes embarqués.",
+            "Portfolio de Matthieu Griffonnet, étudiant en dernière année du cycle ingénieur en informatique à Polytech Nice Sophia, à la recherche d’un stage en IoT embarqué (capteurs, actionneurs, objets connectés).",
     },
     nav: {
         about: "À propos",
@@ -20,14 +20,14 @@ const fr: Dictionary = {
         switchLang: "View the site in English",
     },
     hero: {
-        badge: "Disponible pour un stage de 6 mois en systèmes embarqués",
+        badge: "Disponible pour un stage de 6 mois en IoT embarqué",
         eyebrow: "Futur ingénieur logiciel",
         projects: "Voir mes projets",
         contact: "Me contacter",
         cv: "Télécharger mon CV",
-        cvHref: "/cv/cv-fr.pdf",
+        cvHref: "/cv/matthieu-griffonnet-cv-fr.pdf",
         citations: [
-            "Je cherche un stage en systèmes embarqués",
+            "Je cherche un stage en IoT : capteurs, actionneurs, objets connectés",
             "Je suis passionné d’informatique",
             "Je suis en dernière année d’école d’ingénieur à Polytech Nice Sophia",
             "Je joue dans l’équipe de football de mon université",
@@ -44,7 +44,7 @@ const fr: Dictionary = {
         paragraphs: [
             `Bonjour ! Je m’appelle <span class="font-semibold text-ink">Matthieu Griffonnet</span> et je suis étudiant en dernière année (5e année) du cycle ingénieur en informatique à <span class="font-semibold text-ink">Polytech Nice Sophia</span> (Université Côte d’Azur), spécialisation <span class="font-semibold text-ink">Internet des Objets &amp; Systèmes Cyber-Physiques</span>.`,
             `J’aime concevoir des logiciels fiables, efficaces et bien structurés, du code bas niveau en C aux services back-end en Java et Python, en passant par des pipelines de vision par ordinateur. Au DNIIT, à Da Nang (Vietnam), j’ai conçu des algorithmes de hachage perceptuel pour la détection de copies d’images en temps réel et co-écrit un article accepté à IEEE-Blockchain 2026.`,
-            `Je recherche actuellement un <span class="font-semibold text-accent">stage de fin d’études de 6 mois en systèmes embarqués</span>, pour mettre à profit ma formation IoT/CPS, continuer à apprendre et contribuer à des projets qui ont du sens au sein d’une équipe.`,
+            `Je recherche actuellement un <span class="font-semibold text-accent">stage de fin d’études de 6 mois en IoT embarqué</span> (capteurs, actionneurs, objets connectés), pour mettre à profit ma formation IoT/CPS, continuer à apprendre et contribuer à des projets qui ont du sens au sein d’une équipe.`,
         ],
     },
     experience: {
@@ -265,7 +265,7 @@ const fr: Dictionary = {
     },
     contact: {
         title: "Me contacter",
-        intro: `Vous cherchez un stagiaire pour un <span class="font-semibold text-accent">stage de fin d’études de 6 mois en systèmes embarqués</span> ? Choisissez le moyen qui vous convient.`,
+        intro: `Vous cherchez un stagiaire pour un <span class="font-semibold text-accent">stage de fin d’études de 6 mois en IoT embarqué</span> ? Choisissez le moyen qui vous convient.`,
         mail: "E-mail",
         cv: "CV",
         cvHandle: "Télécharger le PDF",

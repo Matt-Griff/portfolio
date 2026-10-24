@@ -7,7 +7,7 @@ const en = {
     meta: {
         title: "Matthieu Griffonnet's Portfolio",
         description:
-            "Portfolio of Matthieu Griffonnet, final-year computer science engineering student at Polytech Nice Sophia, looking for an embedded systems internship.",
+            "Portfolio of Matthieu Griffonnet, final-year computer science engineering student at Polytech Nice Sophia, looking for an embedded IoT internship (sensors, actuators, connected devices).",
     },
     nav: {
         about: "About",
@@ -22,14 +22,14 @@ const en = {
         switchLang: "Voir le site en français",
     },
     hero: {
-        badge: "Open to a 6-month internship in embedded systems",
+        badge: "Open to a 6-month internship in embedded IoT",
         eyebrow: "Software engineer in training",
         projects: "See my projects",
         contact: "Contact me",
         cv: "Download CV",
-        cvHref: "/cv/cv-en.pdf",
+        cvHref: "/cv/matthieu-griffonnet-cv-en.pdf",
         citations: [
-            "I'm looking for an embedded systems internship",
+            "I'm looking for an IoT internship: sensors, actuators, connected devices",
             "I'm passionate about IT",
             "I'm a final-year engineering student at Polytech Nice Sophia",
             "I play in my university's football team",
@@ -46,7 +46,7 @@ const en = {
         paragraphs: [
             `Hello! My name is <span class="font-semibold text-ink">Matthieu Griffonnet</span>, and I am a final-year (5th year) computer science engineering student at <span class="font-semibold text-ink">Polytech Nice Sophia</span> (Université Côte d’Azur), specialising in <span class="font-semibold text-ink">Internet of Things &amp; Cyber-Physical Systems</span>.`,
             `I enjoy building reliable, efficient, and well-structured software, from low-level code in C to backend services in Java and Python, and computer vision pipelines. At DNIIT in Da Nang, Vietnam, I designed perceptual hashing algorithms for real-time image copy detection and co-authored a paper accepted at IEEE-Blockchain 2026.`,
-            `I am currently looking for a <span class="font-semibold text-accent">6-month end-of-studies internship in embedded systems</span>, where I can put my IoT/CPS background to work, keep learning, and contribute to meaningful projects as part of a team.`,
+            `I am currently looking for a <span class="font-semibold text-accent">6-month end-of-studies internship in embedded IoT</span> (sensors, actuators, connected devices), where I can put my IoT/CPS background to work, keep learning, and contribute to meaningful projects as part of a team.`,
         ],
     },
     experience: {
@@ -267,7 +267,7 @@ const en = {
     },
     contact: {
         title: "Contact Me",
-        intro: `Looking for an intern for a <span class="font-semibold text-accent">6-month end-of-studies internship in embedded systems</span>? Pick whichever way suits you best.`,
+        intro: `Looking for an intern for a <span class="font-semibold text-accent">6-month end-of-studies internship in embedded IoT</span>? Pick whichever way suits you best.`,
         mail: "Mail",
         cv: "CV",
         cvHandle: "Download PDF",

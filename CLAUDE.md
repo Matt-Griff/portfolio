@@ -60,7 +60,7 @@ Animations use plain client `<script>` tags, which Astro bundles. There are no f
 
 - Images are referenced as `/images/...`, which resolves to `public/images/`. Project screenshots are `.webp` files in `public/images/projects/`.
 - School logos for the Education timeline are 256px square PNGs in `public/images/` (`polytech.png`, `iut.png` = Université Côte d'Azur symbol, `marine.png` = PMM insignia, `valbonne.png` = generic school icon, since the lycée has no published logo).
-- The hero's Download CV button links to `public/cv/cv-en.pdf` and `public/cv/cv-fr.pdf`, which the owner provides.
+- The hero's Download CV button links to `public/cv/matthieu-griffonnet-cv-en.pdf` and `public/cv/matthieu-griffonnet-cv-fr.pdf`, which the owner provides.
 - Fonts are self-hosted through `@fontsource-variable/inter` and `@fontsource-variable/space-grotesk`, imported in `Layout.astro`. The site loads nothing from third-party servers.
 - Link-preview images are 1200×630 JPGs: `public/og.jpg` (a screenshot of the hero) and the per-project crops in `public/images/og/`. Regenerate a project crop with `magick <screenshot>.webp -resize 1200x630^ -gravity north -extent 1200x630 -quality 85 <name>.jpg` when its screenshot changes.
 - The favicon is `public/favicon.svg`, with PNG versions for Apple devices and the manifest. If you change the SVG, regenerate the PNGs with `magick`.
