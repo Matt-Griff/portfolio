@@ -5,7 +5,7 @@ import { useTranslations } from '../i18n';
 
 const t = useTranslations(Astro.currentLocale);
 
-// Oldest at the top: the rocket flies down from the first diploma to "What's next ?".
+// Oldest at the top: the drone flies down from the first diploma to "What's next ?".
 const entries = education.map(({ id, logo, years }) => ({ ...t.education.items[id], logo, years }));
 ---
 
@@ -13,7 +13,7 @@ const entries = education.map(({ id, logo, years }) => ({ ...t.education.items[i
     <SectionHeader index="05" title={t.education.title} />
 
     <div class="relative" data-timeline>
-        {/* Zig-zag flight path and rocket, positioned by the script below (desktop only). */}
+        {/* Zig-zag flight path and drone, positioned by the script below (desktop only). */}
         <svg class="pointer-events-none absolute inset-0 hidden h-full w-full overflow-visible md:block" aria-hidden="true" data-flight>
             <defs>
                 <linearGradient id="flight-gradient" x1="0" y1="0" x2="0" y2="1">
@@ -25,12 +25,18 @@ const entries = education.map(({ id, logo, years }) => ({ ...t.education.items[i
             <path data-flight-progress fill="none" stroke="url(#flight-gradient)" stroke-width="3" stroke-linecap="round" />
         </svg>
 
-        <div class="pointer-events-none absolute top-0 left-0 z-10 hidden h-12 w-12 md:block" aria-hidden="true" data-rocket>
-            <svg viewBox="0 0 64 64" class="h-full w-full drop-shadow-lg">
-                <path class="rocket-flame" d="M25 47h14l-7 15z" fill="#f97316" />
-                <path d="M18 36l-9 12v7l9-5zM46 36l9 12v7l-9-5z" fill="var(--color-accent)" />
-                <path d="M32 3c9 8 14 20 14 33v12H18V36c0-13 5-25 14-33z" fill="var(--color-ink)" />
-                <circle cx="32" cy="25" r="6" fill="var(--color-accent-2)" stroke="var(--color-canvas)" stroke-width="2" />
+        <div class="pointer-events-none absolute top-0 left-0 z-10 hidden h-12 w-12 md:block" aria-hidden="true" data-drone>
+            <svg viewBox="0 0 64 64" class="drone-body h-full w-full drop-shadow-lg">
+                <ellipse class="drone-prop" cx="12" cy="13" rx="11" ry="2.5" fill="var(--color-muted)" />
+                <ellipse class="drone-prop" cx="52" cy="13" rx="11" ry="2.5" fill="var(--color-muted)" />
+                <path d="M11 14h2v7h-2zM51 14h2v7h-2z" fill="var(--color-ink)" />
+                <path d="M24 33l-4 10M40 33l4 10M15 43h10M39 43h10" stroke="var(--color-accent)" stroke-width="2.5" stroke-linecap="round" />
+                <rect x="8" y="22" width="48" height="4" rx="2" fill="var(--color-ink)" />
+                <rect x="7" y="20" width="10" height="6" rx="2" fill="var(--color-accent)" />
+                <rect x="47" y="20" width="10" height="6" rx="2" fill="var(--color-accent)" />
+                <rect x="20" y="19" width="24" height="15" rx="5" fill="var(--color-ink)" />
+                <circle cx="32" cy="37" r="4" fill="var(--color-accent)" stroke="var(--color-canvas)" stroke-width="1.5" />
+                <circle cx="32" cy="26" r="3" fill="var(--color-accent-2)" stroke="var(--color-canvas)" stroke-width="1.5" />
             </svg>
         </div>
 
@@ -65,20 +71,40 @@ const entries = education.map(({ id, logo, years }) => ({ ...t.education.items[i
 </section>
 
 <style>
-    .rocket-flame {
-        transform-origin: 32px 47px;
-        animation: flicker 0.15s infinite alternate;
+    .drone-prop {
+        transform-box: fill-box;
+        transform-origin: center;
+        animation: spin 0.08s infinite alternate;
     }
 
-    @keyframes flicker {
+    .drone-body {
+        animation: hover 1.2s ease-in-out infinite alternate;
+    }
+
+    @keyframes spin {
         from {
-            transform: scaleY(0.75);
-            opacity: 0.8;
+            transform: scaleX(1);
         }
 
         to {
-            transform: scaleY(1.1);
-            opacity: 1;
+            transform: scaleX(0.25);
+        }
+    }
+
+    @keyframes hover {
+        from {
+            transform: translateY(0);
+        }
+
+        to {
+            transform: translateY(-3px);
+        }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .drone-prop,
+        .drone-body {
+            animation: none;
         }
     }
 </style>
@@ -95,7 +121,7 @@ const entries = education.map(({ id, logo, years }) => ({ ...t.education.items[i
     const svg = section.querySelector<SVGSVGElement>('[data-flight]')!;
     const track = section.querySelector<SVGPathElement>('[data-flight-track]')!;
     const progress = section.querySelector<SVGPathElement>('[data-flight-progress]')!;
-    const rocket = section.querySelector<HTMLElement>('[data-rocket]')!;
+    const drone = section.querySelector<HTMLElement>('[data-drone]')!;
     // DOM order is top to bottom, which is also the flight order.
     const cards = [...section.querySelectorAll<HTMLElement>('[data-edu]')];
 
@@ -125,12 +151,12 @@ const entries = education.map(({ id, logo, years }) => ({ ...t.education.items[i
         progress.setAttribute('d', d);
     }
 
-    // A card lights up once the rocket has flown past its centre.
+    // A card lights up once the drone has flown past its centre.
     function markReached() {
-        const rocketY = rocket.getBoundingClientRect().top + rocket.offsetHeight / 2;
+        const droneY = drone.getBoundingClientRect().top + drone.offsetHeight / 2;
         cards.forEach((card) => {
             const r = card.getBoundingClientRect();
-            card.dataset.reached = String(rocketY >= r.top + r.height / 2 - 4);
+            card.dataset.reached = String(droneY >= r.top + r.height / 2 - 4);
         });
     }
 
@@ -143,7 +169,7 @@ const entries = education.map(({ id, logo, years }) => ({ ...t.education.items[i
 
         const tl = gsap.timeline({
             defaults: { ease: 'none' },
-            // On the timeline (not the ScrollTrigger) so it tracks the smoothed rocket position.
+            // On the timeline (not the ScrollTrigger) so it tracks the smoothed drone position.
             onUpdate: markReached,
             scrollTrigger: {
                 trigger: section,
@@ -164,9 +190,10 @@ const entries = education.map(({ id, logo, years }) => ({ ...t.education.items[i
             { strokeDashoffset: 0 },
             0
         ).to(
-            rocket,
+            drone,
             {
-                motionPath: { path: progress, align: progress, alignOrigin: [0.5, 0.5], autoRotate: 90 },
+                // Drones stay level instead of turning along the path.
+                motionPath: { path: progress, align: progress, alignOrigin: [0.5, 0.5] },
             },
             0
         );
