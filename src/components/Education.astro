@@ -5,7 +5,7 @@ import { useTranslations } from '../i18n';
 
 const t = useTranslations(Astro.currentLocale);
 
-// Oldest at the top: the drone flies down from the first diploma to "What's next ?".
+// Oldest at the top: the drone flies down from the first diploma and lands on the grass below "What's next ?".
 const entries = education.map(({ id, logo, years }) => ({ ...t.education.items[id], logo, years }));
 ---
 
@@ -13,7 +13,7 @@ const entries = education.map(({ id, logo, years }) => ({ ...t.education.items[i
     <SectionHeader index="05" title={t.education.title} />
 
     <div class="relative" data-timeline>
-        {/* Zig-zag flight path and drone, positioned by the script below (desktop only). */}
+        {/* Zig-zag flight path, positioned by the script below (desktop only). The 3D drone and grass are a WebGL canvas added by src/scripts/drone-scene.ts. */}
         <svg class="pointer-events-none absolute inset-0 hidden h-full w-full overflow-visible md:block" aria-hidden="true" data-flight>
             <defs>
                 <linearGradient id="flight-gradient" x1="0" y1="0" x2="0" y2="1">
@@ -24,21 +24,6 @@ const entries = education.map(({ id, logo, years }) => ({ ...t.education.items[i
             <path data-flight-track fill="none" stroke="var(--color-tint)" stroke-opacity="0.15" stroke-width="2" stroke-dasharray="6 8" />
             <path data-flight-progress fill="none" stroke="url(#flight-gradient)" stroke-width="3" stroke-linecap="round" />
         </svg>
-
-        <div class="pointer-events-none absolute top-0 left-0 z-10 hidden h-12 w-12 md:block" aria-hidden="true" data-drone>
-            <svg viewBox="0 0 64 64" class="drone-body h-full w-full drop-shadow-lg">
-                <ellipse class="drone-prop" cx="12" cy="13" rx="11" ry="2.5" fill="var(--color-muted)" />
-                <ellipse class="drone-prop" cx="52" cy="13" rx="11" ry="2.5" fill="var(--color-muted)" />
-                <path d="M11 14h2v7h-2zM51 14h2v7h-2z" fill="var(--color-ink)" />
-                <path d="M24 33l-4 10M40 33l4 10M15 43h10M39 43h10" stroke="var(--color-accent)" stroke-width="2.5" stroke-linecap="round" />
-                <rect x="8" y="22" width="48" height="4" rx="2" fill="var(--color-ink)" />
-                <rect x="7" y="20" width="10" height="6" rx="2" fill="var(--color-accent)" />
-                <rect x="47" y="20" width="10" height="6" rx="2" fill="var(--color-accent)" />
-                <rect x="20" y="19" width="24" height="15" rx="5" fill="var(--color-ink)" />
-                <circle cx="32" cy="37" r="4" fill="var(--color-accent)" stroke="var(--color-canvas)" stroke-width="1.5" />
-                <circle cx="32" cy="26" r="3" fill="var(--color-accent-2)" stroke="var(--color-canvas)" stroke-width="1.5" />
-            </svg>
-        </div>
 
         <ol class="relative flex flex-col gap-6 md:gap-3">
             {entries.map((edu, i) => {
@@ -67,65 +52,42 @@ const entries = education.map(({ id, logo, years }) => ({ ...t.education.items[i
                 );
             })}
         </ol>
+
+        {/* Space for the grass the drone lands on (desktop only). */}
+        <div class="hidden h-40 md:block" aria-hidden="true" data-ground></div>
     </div>
 </section>
-
-<style>
-    .drone-prop {
-        transform-box: fill-box;
-        transform-origin: center;
-        animation: spin 0.08s infinite alternate;
-    }
-
-    .drone-body {
-        animation: hover 1.2s ease-in-out infinite alternate;
-    }
-
-    @keyframes spin {
-        from {
-            transform: scaleX(1);
-        }
-
-        to {
-            transform: scaleX(0.25);
-        }
-    }
-
-    @keyframes hover {
-        from {
-            transform: translateY(0);
-        }
-
-        to {
-            transform: translateY(-3px);
-        }
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-        .drone-prop,
-        .drone-body {
-            animation: none;
-        }
-    }
-</style>
 
 <script>
     import gsap from 'gsap';
     import { ScrollTrigger } from 'gsap/ScrollTrigger';
     import { MotionPathPlugin } from 'gsap/MotionPathPlugin';
+    import type { DroneState } from '../scripts/drone-scene';
 
     gsap.registerPlugin(ScrollTrigger, MotionPathPlugin);
+
+    // Keep in sync with DRONE_FEET in drone-scene.ts (that module is loaded lazily).
+    const DRONE_FEET = 16;
+    // Ground level, measured down from the top of the grass spacer.
+    const GROUND_OFFSET = 100;
+
+    type Scene = NonNullable<ReturnType<typeof import('../scripts/drone-scene').createDroneScene>>;
 
     const section = document.getElementById('education')!;
     const timeline = section.querySelector<HTMLElement>('[data-timeline]')!;
     const svg = section.querySelector<SVGSVGElement>('[data-flight]')!;
     const track = section.querySelector<SVGPathElement>('[data-flight-track]')!;
     const progress = section.querySelector<SVGPathElement>('[data-flight-progress]')!;
-    const drone = section.querySelector<HTMLElement>('[data-drone]')!;
+    const ground = section.querySelector<HTMLElement>('[data-ground]')!;
     // DOM order is top to bottom, which is also the flight order.
     const cards = [...section.querySelectorAll<HTMLElement>('[data-edu]')];
 
-    // Build a smooth zig-zag through the inner edge of each card, from the top card down.
+    // Drone position in timeline pixels, written by GSAP and read by the 3D scene every frame.
+    const state: DroneState = { x: 0, y: 0, progress: 0 };
+    let groundPoint = { x: 0, y: 0 };
+    let landing = { x: 0, y: 0 };
+
+    // Build a smooth zig-zag through the inner edge of each card, from the top card down to the grass.
     function buildPath() {
         const box = timeline.getBoundingClientRect();
         svg.setAttribute('viewBox', `0 0 ${box.width} ${box.height}`);
@@ -136,9 +98,12 @@ const entries = education.map(({ id, logo, years }) => ({ ...t.education.items[i
             return { x: x - box.left, y: r.top + r.height / 2 - box.top };
         });
         const first = cards[0].getBoundingClientRect();
-        const last = cards[cards.length - 1].getBoundingClientRect();
+        const g = ground.getBoundingClientRect();
+        groundPoint = { x: box.width / 2, y: g.top - box.top + GROUND_OFFSET };
+        // Skids sink slightly into the grass.
+        landing = { x: groundPoint.x, y: groundPoint.y - DRONE_FEET + 2 };
         points.unshift({ x: box.width / 2, y: first.top - box.top - 20 });
-        points.push({ x: box.width / 2, y: last.bottom - box.top + 20 });
+        points.push(landing);
 
         let d = `M${points[0].x},${points[0].y}`;
         for (let i = 1; i < points.length; i++) {
@@ -153,24 +118,51 @@ const entries = education.map(({ id, logo, years }) => ({ ...t.education.items[i
 
     // A card lights up once the drone has flown past its centre.
     function markReached() {
-        const droneY = drone.getBoundingClientRect().top + drone.offsetHeight / 2;
+        const box = timeline.getBoundingClientRect();
         cards.forEach((card) => {
             const r = card.getBoundingClientRect();
-            card.dataset.reached = String(droneY >= r.top + r.height / 2 - 4);
+            card.dataset.reached = String(state.y >= r.top - box.top + r.height / 2 - 4);
         });
+    }
+
+    // Load three.js only on desktop, and only once this section is set up.
+    function loadScene(animate: boolean, onReady: (scene: Scene) => void) {
+        let cancelled = false;
+        import('../scripts/drone-scene')
+            .then(({ createDroneScene }) => {
+                if (cancelled) return;
+                const scene = createDroneScene(timeline, state, { animate });
+                if (scene) onReady(scene);
+            })
+            .catch(() => {});
+        return () => (cancelled = true);
+    }
+
+    function syncScene(scene: Scene | null) {
+        if (!scene) return;
+        const box = timeline.getBoundingClientRect();
+        scene.setSize(box.width, box.height);
+        scene.setGround(groundPoint.x, groundPoint.y, box.width / 2);
     }
 
     const mm = gsap.matchMedia();
 
     mm.add('(min-width: 768px) and (prefers-reduced-motion: no-preference)', () => {
+        let scene: Scene | null = null;
+        const onRefresh = () => syncScene(scene);
+
         buildPath();
         ScrollTrigger.addEventListener('refreshInit', buildPath);
+        ScrollTrigger.addEventListener('refresh', onRefresh);
         const length = () => progress.getTotalLength();
 
         const tl = gsap.timeline({
             defaults: { ease: 'none' },
             // On the timeline (not the ScrollTrigger) so it tracks the smoothed drone position.
-            onUpdate: markReached,
+            onUpdate() {
+                state.progress = this.progress();
+                markReached();
+            },
             scrollTrigger: {
                 trigger: section,
                 start: 'top top',
@@ -189,18 +181,41 @@ const entries = education.map(({ id, logo, years }) => ({ ...t.education.items[i
             { strokeDasharray: length, strokeDashoffset: length },
             { strokeDashoffset: 0 },
             0
-        ).to(
-            drone,
-            {
-                // Drones stay level instead of turning along the path.
-                motionPath: { path: progress, align: progress, alignOrigin: [0.5, 0.5] },
-            },
-            0
-        );
+        ).to(state, { motionPath: { path: progress } }, 0);
+
+        const cancelLoad = loadScene(true, (s) => {
+            scene = s;
+            syncScene(scene);
+        });
 
         return () => {
+            cancelLoad();
+            scene?.dispose();
             ScrollTrigger.removeEventListener('refreshInit', buildPath);
+            ScrollTrigger.removeEventListener('refresh', onRefresh);
             cards.forEach((card) => (card.dataset.reached = 'true'));
+        };
+    });
+
+    // Reduced motion on desktop: no flight, the drone is drawn once, already on the grass.
+    mm.add('(min-width: 768px) and (prefers-reduced-motion: reduce)', () => {
+        let scene: Scene | null = null;
+        const place = () => {
+            buildPath();
+            Object.assign(state, landing, { progress: 1 });
+            syncScene(scene);
+        };
+        place();
+        window.addEventListener('resize', place);
+        const cancelLoad = loadScene(false, (s) => {
+            scene = s;
+            place();
+        });
+
+        return () => {
+            cancelLoad();
+            scene?.dispose();
+            window.removeEventListener('resize', place);
         };
     });
 </script>
