@@ -2,13 +2,54 @@
 interface Props {
     index: string;
     title: string;
+    /** File name shown in the terminal prompt above the title, e.g. "education.md". */
+    file: string;
 }
 
-const { index, title } = Astro.props;
+const { index, title, file } = Astro.props;
 ---
 
-<div class="mb-8 flex items-center gap-4 md:mb-12" data-reveal>
-    <span class="font-display text-sm font-semibold tracking-widest text-accent">{index}</span>
-    <h2 class="font-display text-3xl font-bold tracking-tight md:text-5xl">{title}</h2>
-    <span class="h-px flex-1 bg-gradient-to-r from-tint/15 to-transparent"></span>
+<div class="mb-8 md:mb-12" data-reveal>
+    {/* Decorative terminal prompt; the command types itself out when the header scrolls into view. */}
+    <p class="mb-2 font-mono text-sm text-muted md:text-base" aria-hidden="true" data-prompt>
+        <span class="text-accent">matt</span><span>$&nbsp;</span><span class="text-ink" data-prompt-command>cat {file}</span>
+    </p>
+    <div class="flex items-center gap-4">
+        <span class="font-display text-sm font-semibold tracking-widest text-accent">{index}</span>
+        <h2 class="font-display text-3xl font-bold tracking-tight md:text-5xl">{title}</h2>
+        <span class="h-px flex-1 bg-gradient-to-r from-tint/15 to-transparent"></span>
+    </div>
 </div>
+
+<script>
+    // Type each prompt's command once, the first time it scrolls into view.
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const prompts = document.querySelectorAll<HTMLElement>('[data-prompt]');
+
+    if (!reduced) {
+        const observer = new IntersectionObserver(
+            (entries) => {
+                for (const entry of entries) {
+                    if (!entry.isIntersecting) continue;
+                    observer.unobserve(entry.target);
+                    const command = entry.target.querySelector<HTMLElement>('[data-prompt-command]')!;
+                    const text = command.dataset.text!;
+                    let i = 0;
+                    const type = () => {
+                        command.textContent = text.slice(0, ++i);
+                        if (i < text.length) setTimeout(type, 45 + Math.random() * 50);
+                    };
+                    setTimeout(type, 250);
+                }
+            },
+            { threshold: 0.6 }
+        );
+
+        prompts.forEach((prompt) => {
+            const command = prompt.querySelector<HTMLElement>('[data-prompt-command]')!;
+            command.dataset.text = command.textContent ?? '';
+            command.textContent = '';
+            observer.observe(prompt);
+        });
+    }
+</script>
