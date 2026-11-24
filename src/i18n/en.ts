@@ -44,10 +44,29 @@ const en = {
     about: {
         title: "About Me",
         paragraphs: [
-            `Hello! My name is <span class="font-semibold text-ink">Matthieu Griffonnet</span>, and I am a final-year (5th year) computer science engineering student at <span class="font-semibold text-ink">Polytech Nice Sophia</span> (Université Côte d’Azur), specialising in <span class="font-semibold text-ink">Internet of Things &amp; Cyber-Physical Systems</span>.`,
-            `I enjoy building reliable, efficient, and well-structured software, from low-level code in C to backend services in Java and Python, and computer vision pipelines. At DNIIT in Da Nang, Vietnam, I designed perceptual hashing algorithms for real-time image copy detection and co-authored a paper accepted at IEEE-Blockchain 2026.`,
-            `I am currently looking for a <span class="font-semibold text-accent">6-month end-of-studies internship in embedded IoT</span> (sensors, actuators, connected devices), where I can put my IoT/CPS background to work, keep learning, and contribute to meaningful projects as part of a team.`,
+            `Hello! My name is <span data-topic="matt/name" class="font-semibold text-ink">Matthieu Griffonnet</span>, and I am a <span data-topic="matt/year">final-year (5th year) computer science engineering student</span> at <span data-topic="matt/school" class="font-semibold text-ink">Polytech Nice Sophia</span> (Université Côte d’Azur), specialising in <span data-topic="matt/major" class="font-semibold text-ink">Internet of Things &amp; Cyber-Physical Systems</span>.`,
+            `I enjoy building reliable, efficient, and well-structured software, from low-level code in <span data-topic="matt/stack">C</span> to backend services in <span data-topic="matt/stack">Java</span> and <span data-topic="matt/stack">Python</span>, and computer vision pipelines. At <span data-topic="matt/experience">DNIIT in Da Nang, Vietnam</span>, I designed perceptual hashing algorithms for real-time image copy detection and co-authored a paper accepted at <span data-topic="matt/research">IEEE-Blockchain 2026</span>.`,
+            `I am <span data-topic="matt/status">currently looking</span> for a <span data-topic="matt/looking_for" class="font-semibold text-accent">6-month end-of-studies internship in embedded IoT</span> (sensors, actuators, connected devices), where I can put my IoT/CPS background to work, keep learning, and contribute to meaningful projects as part of a team.`,
         ],
+        // Side panel styled as an MQTT broker log. Each message is published when paragraph `p` scrolls into view,
+        // and highlights the paragraph's spans with the same data-topic.
+        broker: {
+            connecting: "connecting…",
+            connected: "connected",
+            waiting: "waiting for messages…",
+            messages: "msgs",
+            items: [
+                { p: 0, topic: "matt/name", value: "Matthieu Griffonnet" },
+                { p: 0, topic: "matt/year", value: "5th year · CS engineering" },
+                { p: 0, topic: "matt/school", value: "Polytech Nice Sophia" },
+                { p: 0, topic: "matt/major", value: "IoT & CPS" },
+                { p: 1, topic: "matt/stack", value: ["C", "Java", "Python"] },
+                { p: 1, topic: "matt/experience", value: "DNIIT · Da Nang, VN" },
+                { p: 1, topic: "matt/research", value: "IEEE-Blockchain 2026" },
+                { p: 2, topic: "matt/status", value: "open to work" },
+                { p: 2, topic: "matt/looking_for", value: "embedded IoT internship · 6 months" },
+            ] as { p: number; topic: string; value: string | string[] }[],
+        },
     },
     experience: {
         title: "Experience",

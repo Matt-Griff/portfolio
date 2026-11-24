@@ -42,10 +42,27 @@ const fr: Dictionary = {
     about: {
         title: "À propos",
         paragraphs: [
-            `Bonjour ! Je m’appelle <span class="font-semibold text-ink">Matthieu Griffonnet</span> et je suis étudiant en dernière année (5e année) du cycle ingénieur en informatique à <span class="font-semibold text-ink">Polytech Nice Sophia</span> (Université Côte d’Azur), spécialisation <span class="font-semibold text-ink">Internet des Objets &amp; Systèmes Cyber-Physiques</span>.`,
-            `J’aime concevoir des logiciels fiables, efficaces et bien structurés, du code bas niveau en C aux services back-end en Java et Python, en passant par des pipelines de vision par ordinateur. Au DNIIT, à Da Nang (Vietnam), j’ai conçu des algorithmes de hachage perceptuel pour la détection de copies d’images en temps réel et co-écrit un article accepté à IEEE-Blockchain 2026.`,
-            `Je recherche actuellement un <span class="font-semibold text-accent">stage de fin d’études de 6 mois en IoT embarqué</span> (capteurs, actionneurs, objets connectés), pour mettre à profit ma formation IoT/CPS, continuer à apprendre et contribuer à des projets qui ont du sens au sein d’une équipe.`,
+            `Bonjour ! Je m’appelle <span data-topic="matt/name" class="font-semibold text-ink">Matthieu Griffonnet</span> et je suis <span data-topic="matt/year">étudiant en dernière année (5e année) du cycle ingénieur en informatique</span> à <span data-topic="matt/school" class="font-semibold text-ink">Polytech Nice Sophia</span> (Université Côte d’Azur), spécialisation <span data-topic="matt/major" class="font-semibold text-ink">Internet des Objets &amp; Systèmes Cyber-Physiques</span>.`,
+            `J’aime concevoir des logiciels fiables, efficaces et bien structurés, du code bas niveau en <span data-topic="matt/stack">C</span> aux services back-end en <span data-topic="matt/stack">Java</span> et <span data-topic="matt/stack">Python</span>, en passant par des pipelines de vision par ordinateur. <span data-topic="matt/experience">Au DNIIT, à Da Nang (Vietnam)</span>, j’ai conçu des algorithmes de hachage perceptuel pour la détection de copies d’images en temps réel et co-écrit un article accepté à <span data-topic="matt/research">IEEE-Blockchain 2026</span>.`,
+            `Je <span data-topic="matt/status">recherche actuellement</span> un <span data-topic="matt/looking_for" class="font-semibold text-accent">stage de fin d’études de 6 mois en IoT embarqué</span> (capteurs, actionneurs, objets connectés), pour mettre à profit ma formation IoT/CPS, continuer à apprendre et contribuer à des projets qui ont du sens au sein d’une équipe.`,
         ],
+        broker: {
+            connecting: "connexion…",
+            connected: "connecté",
+            waiting: "en attente de messages…",
+            messages: "msgs",
+            items: [
+                { p: 0, topic: "matt/name", value: "Matthieu Griffonnet" },
+                { p: 0, topic: "matt/year", value: "5e année · ingénieur info" },
+                { p: 0, topic: "matt/school", value: "Polytech Nice Sophia" },
+                { p: 0, topic: "matt/major", value: "IoT & CPS" },
+                { p: 1, topic: "matt/stack", value: ["C", "Java", "Python"] },
+                { p: 1, topic: "matt/experience", value: "DNIIT · Da Nang, VN" },
+                { p: 1, topic: "matt/research", value: "IEEE-Blockchain 2026" },
+                { p: 2, topic: "matt/status", value: "disponible" },
+                { p: 2, topic: "matt/looking_for", value: "stage IoT embarqué · 6 mois" },
+            ],
+        },
     },
     experience: {
         title: "Expérience",

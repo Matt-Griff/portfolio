@@ -3,12 +3,289 @@ import SectionHeader from './SectionHeader.astro';
 import { useTranslations } from '../i18n';
 
 const t = useTranslations(Astro.currentLocale);
+const broker = t.about.broker;
+
+// JSON-style payloads: strings in quotes, arrays with spaces after commas.
+const payload = (value: string | string[]) => JSON.stringify(value).replace(/","/g, '", "');
 ---
 
 <section id="about" class="mx-auto max-w-6xl px-6 py-16 md:py-24">
     <SectionHeader index="01" title={t.about.title} file="about.md" />
 
-    <div class="max-w-3xl space-y-6 text-lg leading-relaxed text-muted">
-        {t.about.paragraphs.map((paragraph) => <p data-reveal set:html={paragraph} />)}
+    <div class="grid gap-10 lg:grid-cols-[minmax(0,1fr)_24rem] lg:items-start">
+        <div class="max-w-3xl space-y-6 text-lg leading-relaxed text-muted">
+            {t.about.paragraphs.map((paragraph, i) => <p data-reveal data-publisher={i} set:html={paragraph} />)}
+        </div>
+
+        {/* Decorative MQTT broker log: the key words start as random characters, and each message it receives is forwarded as a particle that decodes them. */}
+        <aside
+            class="overflow-hidden rounded-2xl border border-tint/10 bg-surface/80 font-mono text-xs backdrop-blur-sm"
+            aria-hidden="true"
+            data-reveal
+            data-broker
+        >
+            <div class="flex items-center justify-between gap-3 border-b border-tint/10 px-4 py-3">
+                <span class="truncate text-muted">mqtt://matt.local:1883</span>
+                <span class="flex shrink-0 items-center gap-1.5 text-muted">
+                    <span class="h-2 w-2 rounded-full bg-amber-400 transition-colors" data-broker-led></span>
+                    <span data-broker-status data-connecting={broker.connecting} data-connected={broker.connected}>{broker.connected}</span>
+                </span>
+            </div>
+
+            <div class="px-4 pt-3 text-muted">
+                <span class="text-accent">$</span> mosquitto_sub -t 'matt/#' -v
+            </div>
+
+            {/* Every message keeps its slot (hidden until published), so the panel never changes height. */}
+            <div class="relative px-4 py-3">
+                <p class="absolute top-3 left-4 hidden text-muted/70 italic" data-broker-waiting>{broker.waiting}</p>
+                <ol class="flex flex-col gap-1.5">
+                    {
+                        broker.items.map((item) => (
+                            <li class="grid grid-cols-[auto_minmax(0,1fr)] gap-x-2 leading-relaxed" data-message data-p={item.p} data-topic-name={item.topic}>
+                                <span class="text-muted/60" data-time>--:--:--</span>
+                                <span class="flex flex-wrap gap-x-2">
+                                    <span class="text-accent">{item.topic}</span>
+                                    <span class="text-ink">{payload(item.value)}</span>
+                                </span>
+                            </li>
+                        ))
+                    }
+                </ol>
+            </div>
+
+            <div class="flex justify-between border-t border-tint/10 px-4 py-2 text-muted">
+                <span>QoS 1</span>
+                <span><span data-broker-count>{broker.items.length}</span> {broker.messages}</span>
+            </div>
+        </aside>
     </div>
 </section>
+
+<script>
+    import gsap from 'gsap';
+
+    const section = document.getElementById('about')!;
+    const panel = section.querySelector<HTMLElement>('[data-broker]')!;
+    const led = panel.querySelector<HTMLElement>('[data-broker-led]')!;
+    const status = panel.querySelector<HTMLElement>('[data-broker-status]')!;
+    const waiting = panel.querySelector<HTMLElement>('[data-broker-waiting]')!;
+    const count = panel.querySelector<HTMLElement>('[data-broker-count]')!;
+    const messages = [...panel.querySelectorAll<HTMLElement>('[data-message]')];
+    const publishers = [...section.querySelectorAll<HTMLElement>('[data-publisher]')];
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    const setConnected = (connected: boolean) => {
+        led.classList.toggle('bg-amber-400', !connected);
+        led.classList.toggle('bg-emerald-400', connected);
+        status.textContent = (connected ? status.dataset.connected : status.dataset.connecting) ?? '';
+    };
+
+    // Highlighted words in the paragraphs fade back after a moment.
+    section.querySelectorAll<HTMLElement>('[data-topic]').forEach((el) => {
+        el.classList.add('rounded-sm', 'transition-colors', 'duration-700');
+    });
+    const highlight = (topic: string) => {
+        const spans = section.querySelectorAll<HTMLElement>(`[data-topic="${topic}"]`);
+        spans.forEach((el) => el.classList.add('bg-accent/25'));
+        setTimeout(() => spans.forEach((el) => el.classList.remove("bg-accent/25")), 3000);
+    };
+
+    const now = () => new Date().toLocaleTimeString('en-GB', { hour12: false });
+
+    // Pause between two messages, and how long a particle takes to reach the text.
+    const GAP = 1300;
+    const FLIGHT = 0.7;
+    // How often the scrambled characters change while they wait (ms).
+    const FLICKER = 300;
+    const CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789#$%&*@';
+
+    if (reduced) {
+        setConnected(true);
+        messages.forEach((m) => (m.querySelector<HTMLElement>('[data-time]')!.textContent = now()));
+    } else {
+        let received = 0;
+        messages.forEach((m) => (m.style.visibility = 'hidden'));
+        waiting.classList.remove('hidden');
+        count.textContent = '0';
+        setConnected(false);
+
+        // Key words show as random characters until their message arrives. Each random character sits on top
+        // of the real (transparent) letter, so it takes exactly that letter's width and lines never reflow.
+        // Screen readers get the real words from a visually hidden copy; the scrambled part is hidden from them.
+        // Random characters are picked among those about as wide as the real letter in the same font,
+        // so a W never sits on top of an i and spills onto its neighbours.
+        const ctx = document.createElement('canvas').getContext('2d')!;
+        const lookalikes = new Map<string, string[]>();
+        const candidatesFor = (char: string, font: string) => {
+            const key = font + '|' + char;
+            if (!lookalikes.has(key)) {
+                ctx.font = font;
+                const target = ctx.measureText(char).width;
+                const ranked = [...CHARS]
+                    .map((c) => ({ c, d: Math.abs(ctx.measureText(c).width - target) }))
+                    .sort((a, b) => a.d - b.d);
+                const close = ranked.filter((r) => r.d <= Math.max(0.8, target * 0.12)).map((r) => r.c);
+                lookalikes.set(key, close.length >= 4 ? close : ranked.slice(0, 4).map((r) => r.c));
+            }
+            return lookalikes.get(key)!;
+        };
+        const options = new Map<HTMLElement, string[]>();
+        const randomChar = (glyph: HTMLElement) => {
+            const list = options.get(glyph)!;
+            return list[Math.floor(Math.random() * list.length)];
+        };
+        const pending = new Set<HTMLElement>();
+        const glyphsOf = new Map<HTMLElement, HTMLElement[]>();
+
+        section.querySelectorAll<HTMLElement>('[data-topic]').forEach((el) => {
+            const text = el.textContent ?? '';
+            const style = getComputedStyle(el);
+            const font = `${style.fontStyle} ${style.fontWeight} ${style.fontSize} ${style.fontFamily}`;
+            const visible = document.createElement('span');
+            visible.setAttribute('aria-hidden', 'true');
+            const glyphs: HTMLElement[] = [];
+            for (const part of text.split(/(\s+)/)) {
+                if (!part) continue;
+                if (/^\s+$/.test(part)) {
+                    visible.append(part);
+                    continue;
+                }
+                // Keep each word on one line, like normal text.
+                const word = document.createElement('span');
+                word.className = 'whitespace-nowrap';
+                for (const char of part) {
+                    const cell = document.createElement('span');
+                    cell.className = 'relative inline-block';
+                    const ghost = document.createElement('span');
+                    ghost.className = 'text-transparent';
+                    ghost.textContent = char;
+                    const glyph = document.createElement('span');
+                    glyph.className = 'absolute inset-0 text-center';
+                    glyph.dataset.char = char;
+                    options.set(glyph, candidatesFor(char, font));
+                    glyph.textContent = randomChar(glyph);
+                    cell.append(ghost, glyph);
+                    word.append(cell);
+                    glyphs.push(glyph);
+                    pending.add(glyph);
+                }
+                visible.append(word);
+            }
+            const real = document.createElement('span');
+            real.className = 'sr-only';
+            real.textContent = text;
+            el.replaceChildren(visible, real);
+            glyphsOf.set(el, glyphs);
+        });
+
+        // Keep the scrambled characters flickering while they wait.
+        const flicker = setInterval(() => {
+            if (!pending.size) return clearInterval(flicker);
+            pending.forEach((glyph) => (glyph.textContent = randomChar(glyph)));
+        }, FLICKER);
+
+        // The whole word decodes at once when its particle lands. The letter cells stay afterwards: swapping
+        // back to plain text would restore kerning and nudge the line by a pixel or two.
+        const decode = (words: Iterable<HTMLElement>) => {
+            for (const word of words) {
+                const glyphs = glyphsOf.get(word);
+                if (!glyphs) continue;
+                glyphsOf.delete(word);
+                for (const glyph of glyphs) {
+                    pending.delete(glyph);
+                    glyph.textContent = glyph.dataset.char!;
+                }
+            }
+        };
+
+        // Particle that flies from the broker's log line to the words it decodes.
+        // Both ends are re-measured on every frame, so it stays on course if the page scrolls mid-flight.
+        const sendParticle = (from: HTMLElement, to: Element, done: () => void) => {
+            const dot = document.createElement('span');
+            dot.className = 'pointer-events-none fixed top-0 left-0 z-50 -mt-1 -ml-1 h-2 w-2 rounded-full bg-accent shadow-[0_0_12px_var(--color-accent)]';
+            document.body.appendChild(dot);
+            const flight = { t: 0 };
+            const place = () => {
+                const a = from.getBoundingClientRect();
+                const b = to.getBoundingClientRect();
+                const x0 = a.left;
+                const y0 = a.top + a.height / 2;
+                const x1 = b.left + b.width / 2;
+                const y1 = b.top + b.height / 2;
+                gsap.set(dot, { x: x0 + (x1 - x0) * flight.t, y: y0 + (y1 - y0) * flight.t });
+            };
+            place();
+            gsap.to(flight, {
+                t: 1,
+                duration: FLIGHT,
+                ease: 'power1.inOut',
+                onUpdate: place,
+                onComplete: () => {
+                    dot.remove();
+                    done();
+                },
+            });
+        };
+
+        // The broker receives the message (log line), then forwards it to the text.
+        const receive = (message: HTMLElement) => {
+            setConnected(true);
+            waiting.style.display = 'none';
+            message.querySelector<HTMLElement>('[data-time]')!.textContent = now();
+            message.style.visibility = '';
+            gsap.from(message, { opacity: 0, x: 12, duration: 0.4, ease: 'power2.out' });
+            count.textContent = String(++received);
+        };
+
+        // One message at a time, in reading order. Side by side, wait until the panel is on screen too.
+        const queue: HTMLElement[] = [];
+        const sideBySide = window.matchMedia('(min-width: 1024px)');
+        let busy = false;
+        let panelVisible = false;
+
+        const next = () => {
+            if (busy || !queue.length || (sideBySide.matches && !panelVisible)) return;
+            busy = true;
+            const message = queue.shift()!;
+            const topic = message.dataset.topicName!;
+            const paragraph = publishers[Number(message.dataset.p)];
+            const words = paragraph.querySelectorAll<HTMLElement>(`[data-topic="${topic}"]`);
+            receive(message);
+            setTimeout(() => {
+                sendParticle(message, words[0] ?? paragraph, () => {
+                    decode(words);
+                    highlight(topic);
+                    setTimeout(() => {
+                        busy = false;
+                        next();
+                    }, GAP);
+                });
+            }, 300);
+        };
+
+        const order = (m: HTMLElement) => messages.indexOf(m);
+        const paragraphs = new IntersectionObserver(
+            (entries) => {
+                for (const entry of entries) {
+                    if (!entry.isIntersecting) continue;
+                    paragraphs.unobserve(entry.target);
+                    const p = (entry.target as HTMLElement).dataset.publisher;
+                    queue.push(...messages.filter((m) => m.dataset.p === p));
+                }
+                queue.sort((a, b) => order(a) - order(b));
+                next();
+            },
+            { rootMargin: '0px 0px -20% 0px', threshold: 0.5 }
+        );
+        publishers.forEach((p) => paragraphs.observe(p));
+
+        new IntersectionObserver(
+            ([entry]) => {
+                panelVisible = entry.isIntersecting;
+                next();
+            },
+            { threshold: 0.4 }
+        ).observe(panel);
+    }
+</script>
